@@ -16,6 +16,8 @@
         android:inputType="text" >
     </EditText>
 
+    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,5 +40,12 @@
             android:text="@string/Undo" />
 
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.07"
+        android:text="TextView" />
 
 </LinearLayout>
