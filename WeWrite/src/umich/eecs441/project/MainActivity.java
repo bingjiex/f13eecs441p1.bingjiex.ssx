@@ -9,6 +9,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// TODO: addClient(*id*)
+		CursorTrack.getInstance().addClient(0);
+		
 		setContentView(R.layout.text_editor_screen);
 	}
 

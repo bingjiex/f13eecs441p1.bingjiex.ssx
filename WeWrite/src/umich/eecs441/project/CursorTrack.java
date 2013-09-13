@@ -88,5 +88,8 @@ public class CursorTrack {
 		return cursorMap.get(client);
 	}
 	
+	public void addClient (int client) {
+		cursorMap.put(client, 0);
+	}
 
 }

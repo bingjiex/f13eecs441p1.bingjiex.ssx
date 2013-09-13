@@ -26,7 +26,7 @@ public class CursorCommand implements AbstractCommand {
 		 * send request
 		 */
 		currentTrack.moveCursor(client, movement);
-		Log.i("CursorCommand", "move");
+		Log.i("CursorCommand", "move" + String.valueOf(movement));
 	}
 	
 	public void unwind() {
