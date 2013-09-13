@@ -9,7 +9,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.text_editor_screen);
 	}
 
 	@Override
@@ -19,4 +19,5 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	
 }

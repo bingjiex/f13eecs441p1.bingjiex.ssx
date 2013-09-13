@@ -9,16 +9,47 @@ import java.util.*;
  *
  */
 public class CursorTrack {
+	
+	
+	/*
+	 * change back to singleton so no need to pass the instance for every class
+	 */
+	private static CursorTrack instance = null;
+	
+	
 	/**
 	 * the hashmap that keeps track the client cursor position pair
 	 */
 	private HashMap <Integer, Integer> cursorMap = null;
+	
+	
 	/**
 	 * constructor
 	 */
-	public CursorTrack() {
+	protected CursorTrack() {
 		cursorMap = new HashMap <Integer, Integer>();
 	}
+	/**
+	 * still need a constructor with value
+	 */
+	
+	
+	
+	/**
+	 * getInstance without parameter
+	 */
+	public static CursorTrack getInstance() {
+		if (instance == null)
+			instance = new CursorTrack();
+		return instance;
+	}
+	
+	
+	/**
+	 * still need a getInstance with parameter
+	 */
+	
+	
 	/**
 	 * move all the cursors that after this client cursors right by length
 	 * @param client

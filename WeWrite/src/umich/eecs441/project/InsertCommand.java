@@ -38,7 +38,6 @@ public class InsertCommand implements AbstractCommand{
 	 */
 	private CursorTrack currentCursor; 
 	
-	private CommandManager currentManager;
 	
 	/**
 	 * get the client of the operation
@@ -54,18 +53,15 @@ public class InsertCommand implements AbstractCommand{
 	 * @param myChar
 	 * @param currentText
 	 */
-	public InsertCommand(String myChar, EditText currentText, int myClient,
-								CursorTrack myCursorTrack, CommandManager cmdManager){
+	public InsertCommand(String myChar, EditText currentText){
 		
 		// current is int type, expected to use client type
-		client = myClient;
+		client = Client.getInstance().getClient();
 		
-		currentCursor = myCursorTrack;
+		currentCursor = CursorTrack.getInstance();
 		newChar = myChar;
 		text = currentText;
-		
-		currentManager = cmdManager;
-		
+				
 		Log.i("InsertCommand", "Constructor");
 	}
 	
@@ -78,10 +74,8 @@ public class InsertCommand implements AbstractCommand{
 		currentCursor.moveRight(client, newChar.length());
 		
 		/*
-		 * Store to the command manager log
-		 */
-		currentManager.storeCommand(this);
-		
+		 * Store to the command manager log, when Command is constructed, use getInstance store!!!
+		 */		
 		Log.i("InsertCommand", "Character inserted " + newChar);
 	}
 	
@@ -109,4 +103,6 @@ public class InsertCommand implements AbstractCommand{
 		text.setText(temp);
 		currentCursor.moveRight(client, newChar.length());
 	}
+	
+	
 }

@@ -11,12 +11,11 @@ public class CursorCommand implements AbstractCommand {
 	private CursorTrack currentTrack;
 	private CommandManager currentManager;
 	
-	public CursorCommand (int c, int m, CursorTrack cT, CommandManager cM) {
+	public CursorCommand (int m) {
+		client = Client.getInstance().getClient();
 		movement = m;
-		currentTrack = cT;
-		currentManager = cM;
+		currentTrack = CursorTrack.getInstance();
 	}
-	
 	public int getClient(){
 		return client;
 	}

@@ -6,8 +6,8 @@ public class UndoCommand implements AbstractCommand{
 	
 	int client;
 	
-	public UndoCommand (int myClient) {
-		client = myClient;
+	public UndoCommand () {
+		client = Client.getInstance().getClient();
 	}
 	
 	public void execute() {
@@ -22,5 +22,10 @@ public class UndoCommand implements AbstractCommand{
 	 */
 	public void unwind() {}
 	public void rewind() {}
+
+	@Override
+	public int getClient() {
+		return client;
+	}
 	
 }
