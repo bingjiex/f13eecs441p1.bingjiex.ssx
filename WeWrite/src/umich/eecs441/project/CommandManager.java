@@ -2,6 +2,8 @@ package umich.eecs441.project;
 
 import java.util.Vector;
 
+import android.util.Log;
+
 /**
  * Singleton for the CommandManager
  * @author picc
@@ -43,6 +45,7 @@ public class CommandManager {
 	
 	public void storeCommand (AbstractCommand cmd) {
 		commandStack.add(cmd);
+		Log.i("commandStack size is ", String.valueOf(commandStack.size()));
 	}
 	
 	/**
@@ -53,24 +56,37 @@ public class CommandManager {
 	
 	public void undo(AbstractCommand cmd) {
 		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("command in Stack", "name " + commandStack.elementAt(i).getClass().toString());
+		}
+		
 		Vector <AbstractCommand> temp = new Vector<AbstractCommand>();
 		
 		for (int i = commandStack.size() - 1; i >= 0; i--){
-			// unwind the current command
-			commandStack.elementAt(i).unwind();
+			// current command
+			AbstractCommand tempCommand = commandStack.elementAt(i);
+			
+			// unwind current command
+			tempCommand.unwind();
+			
+			// delete command
+			commandStack.remove(i);
+			
 			// when it is the client operation and the opertion is not undo
-			if (commandStack.elementAt(i).getClient() == cmd.getClient() && !(cmd instanceof UndoCommand)) {
+			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand)) {
 				// the one that should be undone
 				// put into the redoList
-				redoList.add(commandStack.elementAt(i));
+				redoList.add(tempCommand);
+				// add the obtained undo command to the list
+				commandStack.add(cmd);
 				break;
 			}
 			// else put into temp array
-			temp.add(cmd);
+			temp.add(tempCommand);
 		}
 		for (int i = temp.size() - 1; i >= 0; i--) {
 			temp.elementAt(i).rewind();
-			
+			commandStack.add(temp.elementAt(i));
 		}
 	}
 

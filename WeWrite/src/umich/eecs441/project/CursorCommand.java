@@ -9,7 +9,6 @@ public class CursorCommand implements AbstractCommand {
 	
 	private int movement;
 	private CursorTrack currentTrack;
-	private CommandManager currentManager;
 	
 	public CursorCommand (int m) {
 		client = Client.getInstance().getClient();
@@ -19,7 +18,9 @@ public class CursorCommand implements AbstractCommand {
 	public int getClient(){
 		return client;
 	}
-	
+	public int getMovement() { 
+		return movement;
+	}
 	
 	public void execute() {
 		/*
@@ -31,7 +32,13 @@ public class CursorCommand implements AbstractCommand {
 	
 	public void unwind() {
 		Log.i("CursorCommand", "unwind");
+		
+		Log.i("Cursor moving", "from " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		
 		currentTrack.moveCursor(client, -movement);
+		
+		Log.i("Cursor moving", "to " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		
 	}
 	
 	public void rewind() {

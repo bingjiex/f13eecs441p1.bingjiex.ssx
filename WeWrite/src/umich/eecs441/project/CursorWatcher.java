@@ -2,6 +2,7 @@ package umich.eecs441.project;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,8 +30,12 @@ public class CursorWatcher extends EditText {
 			int clientID = Client.getInstance().getClient();
 			int posCursorPos = CursorTrack.getInstance().getCursor(clientID);
 			int mov = selEnd - posCursorPos;
-			AbstractCommand cmd = new CursorCommand(mov);
-			cmd.execute();
+			if (mov != 0) {
+				AbstractCommand cmd = new CursorCommand(mov);
+				Log.i("Triger onSelectionChanged", "Command Class Name " + cmd.getClass().toString());
+				CommandManager.getInstance().storeCommand(cmd);
+				cmd.execute();
+			}
 		}
         Toast.makeText(getContext(), "selStart is " + selStart + "selEnd is " + selEnd, Toast.LENGTH_LONG).show();
      } 
