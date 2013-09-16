@@ -53,7 +53,7 @@ public class InsertCommand implements AbstractCommand{
 	 * @param myChar
 	 * @param currentText
 	 */
-	public InsertCommand(String myChar, EditText currentText){
+	public InsertCommand(String myChar, CursorWatcher currentText){
 		
 		// current is int type, expected to use client type
 		client = Client.getInstance().getClient();
@@ -66,6 +66,7 @@ public class InsertCommand implements AbstractCommand{
 	}
 	
 	public void execute(){
+		Log.i("InsertCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
 		/*
 		 * send execute request
 		 * increment the all the cursor after the current cursor position by 1 for rewind
@@ -77,6 +78,7 @@ public class InsertCommand implements AbstractCommand{
 		 * Store to the command manager log, when Command is constructed, use getInstance store!!!
 		 */		
 		Log.i("InsertCommand", "Character inserted " + newChar);
+		Log.i("InsertCommand, current cursor after execute", String.valueOf(currentCursor.getCursor(client)));
 	}
 	
 	// undo is just a signal from the server and do undo operation

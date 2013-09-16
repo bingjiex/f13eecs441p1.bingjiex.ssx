@@ -4,24 +4,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <umich.eecs441.project.CursorWatcher
-        android:id="@+id/txtMessage"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="219dp"
-        android:layout_weight="0.07"
-        android:background="@drawable/shadow"
-        android:ems="10"
-        android:gravity="top"
-        android:hint="@string/hint"
-        android:inputType="text" >
-    </umich.eecs441.project.CursorWatcher>
+        android:layout_height="wrap_content"
+        android:layout_weight="6" >
+  
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
 
-    
+        </LinearLayout>
+
+        <umich.eecs441.project.CursorWatcher
+            android:id="@+id/txtMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:gravity="top"
+            android:hint="@string/hint"
+            android:inputType="textMultiLine" 
+            android:textSize="34sp"
+            android:layout_weight="4" 
+            android:singleLine="false">
+        </umich.eecs441.project.CursorWatcher>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" 
+            android:layout_weight="1" >
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.07" >
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/button1"

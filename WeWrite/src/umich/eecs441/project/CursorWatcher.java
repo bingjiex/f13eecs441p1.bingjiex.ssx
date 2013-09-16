@@ -6,8 +6,10 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+// change to singleton since for every client there is just one instance
 public class CursorWatcher extends EditText {
-	public CursorWatcher(Context context, AttributeSet attrs,
+		
+	protected CursorWatcher(Context context, AttributeSet attrs,
             int defStyle) {
         super(context, attrs, defStyle);
 
@@ -26,17 +28,11 @@ public class CursorWatcher extends EditText {
 	
 	 @Override   
      protected void onSelectionChanged(int selStart, int selEnd) { 
-		if (selStart == selEnd) {
+		if (selStart != selEnd) {
 			int clientID = Client.getInstance().getClient();
-			int posCursorPos = CursorTrack.getInstance().getCursor(clientID);
-			int mov = selEnd - posCursorPos;
-			if (mov != 0) {
-				AbstractCommand cmd = new CursorCommand(mov);
-				Log.i("Triger onSelectionChanged", "Command Class Name " + cmd.getClass().toString());
-				CommandManager.getInstance().storeCommand(cmd);
-				cmd.execute();
-			}
+			int cursorPos = CursorTrack.getInstance().getCursor(clientID);
+			
+			this.setSelection(cursorPos);
 		}
-        Toast.makeText(getContext(), "selStart is " + selStart + "selEnd is " + selEnd, Toast.LENGTH_LONG).show();
      } 
 }

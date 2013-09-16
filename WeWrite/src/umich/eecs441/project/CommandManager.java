@@ -57,11 +57,19 @@ public class CommandManager {
 	public void undo(AbstractCommand cmd) {
 		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
-			Log.i("command in Stack", "name " + commandStack.elementAt(i).getClass().toString());
+			Log.i("command in Stack before undo", "name " + commandStack.elementAt(i).getClass().toString());
+		}
+		
+		for (int i = redoList.size() - 1; i >= 0; i--) {
+			Log.i("command in redolist before undo", redoList.elementAt(i).getClass().toString());
 		}
 		
 		Vector <AbstractCommand> temp = new Vector<AbstractCommand>();
 		
+		// TODO record how many commands the current client has. If the command number is 0,
+		// means the current client has no command to redo and return directly
+		
+		// TODO notice that if the undo is the same client and the client action is unconfirmed
 		for (int i = commandStack.size() - 1; i >= 0; i--){
 			// current command
 			AbstractCommand tempCommand = commandStack.elementAt(i);
@@ -72,11 +80,12 @@ public class CommandManager {
 			// delete command
 			commandStack.remove(i);
 			
-			// when it is the client operation and the opertion is not undo
+			// when it is the client operation and the operation is not undo
 			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand)) {
 				// the one that should be undone
 				// put into the redoList
 				redoList.add(tempCommand);
+				//! Notice that the redoList is increasing, later one is at behind!!!!!
 				// add the obtained undo command to the list
 				commandStack.add(cmd);
 				break;
@@ -84,15 +93,83 @@ public class CommandManager {
 			// else put into temp array
 			temp.add(tempCommand);
 		}
+		// rewind all the command back.
 		for (int i = temp.size() - 1; i >= 0; i--) {
 			temp.elementAt(i).rewind();
 			commandStack.add(temp.elementAt(i));
 		}
+		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("command in Stack after", "name " + commandStack.elementAt(i).getClass().toString());
+		}
+		
+		for (int i = redoList.size() - 1; i >= 0; i--) {
+			Log.i("command in redolist after undo", redoList.elementAt(i).getClass().toString());
+		}
 	}
 
-	public void redo() {
+	public void redo(AbstractCommand cmd) {
+		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("command in Stack before redo", "name " + commandStack.elementAt(i).getClass().toString());
+		}
+		
+		for (int i = redoList.size() - 1; i >= 0; i--) {
+			Log.i("command in redolist before redo", redoList.elementAt(i).getClass().toString());
+		}
+		
+		// undo temp vector for save the top of the command stack
+		Vector<AbstractCommand> temp = new Vector<AbstractCommand>();
+		
+		// TODO keep a value to see if the redo list contains the client's operation
+		// vector is ordered remove
+		
+		// TODO if there is a need for memory allocation. and how to copy
+		AbstractCommand redoCommand = null;
+		for (int i = redoList.size() - 1; i >= 0; i--) {
+			if (redoList.elementAt(i).getClient() == cmd.getClient()) {
+				redoCommand = redoList.elementAt(i);
+				redoList.removeElementAt(i);
+				break;
+			}
+		}
+		Log.i("redoList size ", String.valueOf(redoList.size()));
+		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			// current command
+			AbstractCommand tempCommand = commandStack.elementAt(i);
+			
+			// unwind current command
+			tempCommand.unwind();
+			
+			// delete command
+			commandStack.remove(i);
+			
+			// when it is the client operation and the operation is undo
+			if (tempCommand.getClient() == cmd.getClient() && (tempCommand instanceof UndoCommand)) {
+
+				// put the command back to the stack
+				redoCommand.rewind();
+				commandStack.add(redoCommand);
+				break;
+			}
+			// else put into temp array
+			temp.add(tempCommand);
+		}
+		// rewind all the command back.
+		for (int i = temp.size() - 1; i >= 0; i--) {
+			temp.elementAt(i).rewind();
+			commandStack.add(temp.elementAt(i));
+		}
+		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("command in Stack after redo", "name " + commandStack.elementAt(i).getClass().toString());
+		}
+		
+		for (int i = redoList.size() - 1; i >= 0; i--) {
+			Log.i("command in redolist after redo", redoList.elementAt(i).getClass().toString());
+		}
 		
 	}
 	
-
 }
