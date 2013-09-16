@@ -31,7 +31,7 @@ public class InsertCommand implements AbstractCommand{
 	/**
 	 * the current text on the edit text
 	 */
-	private EditText text;
+	private CursorWatcher text;
 	
 	/**
 	 * the cursor instance
@@ -85,6 +85,9 @@ public class InsertCommand implements AbstractCommand{
 	// request send from UndoCommand
 	
 	public void unwind(){
+		
+		text.removeTextChangedListener(text.getTextWatcher());
+		
 		Log.i("InsertCommand", "Unwind");
 		/*
 		 * When unwind to this operation, the cursor must behind the char
@@ -95,15 +98,19 @@ public class InsertCommand implements AbstractCommand{
 		temp = temp.substring(0,cursorPosition - newChar.length()) + temp.substring(cursorPosition);
 		text.setText(temp);
 		currentCursor.moveLeft(client, newChar.length());
+		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
 	public void rewind(){
+		
+		text.removeTextChangedListener(text.getTextWatcher());
 		Log.i("InsertCommand", "Rewind");
 		String temp = text.getText().toString();
 		int cursorPosition = currentCursor.getCursor(client);
 		temp = temp.substring(0, cursorPosition) + newChar + temp.substring(cursorPosition);
 		text.setText(temp);
 		currentCursor.moveRight(client, newChar.length());
+		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
 	

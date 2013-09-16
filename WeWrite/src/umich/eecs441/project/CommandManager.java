@@ -135,23 +135,32 @@ public class CommandManager {
 		}
 		Log.i("redoList size ", String.valueOf(redoList.size()));
 		
+		int undoNum = Client.getInstance().getRedoListContains();
+		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
 			// current command
 			AbstractCommand tempCommand = commandStack.elementAt(i);
 			
 			// unwind current command
 			tempCommand.unwind();
-			
+			Log.i("redo's unwind", String.valueOf(CursorTrack.getInstance().getCursor(Client.getInstance().getClient())));
 			// delete command
 			commandStack.remove(i);
+			
+			
 			
 			// when it is the client operation and the operation is undo
 			if (tempCommand.getClient() == cmd.getClient() && (tempCommand instanceof UndoCommand)) {
 
-				// put the command back to the stack
-				redoCommand.rewind();
-				commandStack.add(redoCommand);
-				break;
+				if (undoNum == 1) {
+					// put the command back to the stack
+					redoCommand.rewind();
+					commandStack.add(redoCommand);
+					break;
+				}
+				else {
+					undoNum --;
+				}
 			}
 			// else put into temp array
 			temp.add(tempCommand);

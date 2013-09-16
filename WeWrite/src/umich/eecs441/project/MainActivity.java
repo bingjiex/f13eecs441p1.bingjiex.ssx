@@ -82,6 +82,7 @@ public class MainActivity extends Activity {
 		
 		
 		
+		
 		editText.setOnClickListener(new EditText.OnClickListener () {
 
 			@Override
@@ -103,7 +104,7 @@ public class MainActivity extends Activity {
 			
 		});
 		
-		editText.addTextChangedListener(new TextWatcher() {
+		TextWatcher textWatcher = new TextWatcher() {
 			
 			
 			public void afterTextChanged(Editable s) {
@@ -137,9 +138,10 @@ public class MainActivity extends Activity {
 				
 				
 			}
-		});
+		};
 		
-		
+		editText.setTextWatcher(textWatcher);
+		editText.addTextChangedListener(editText.getTextWatcher());
 	}
 
 	@Override
