@@ -16,16 +16,13 @@ public class CommandManager {
 	private static CommandManager instance = null;
 	
 	private Vector<AbstractCommand> commandStack = null; 
-	private Vector<AbstractCommand> redoList = null;
 	
 	
 	protected CommandManager() {
 		commandStack = new Vector<AbstractCommand> ();
-		redoList = new Vector<AbstractCommand> ();
 	}
-	protected CommandManager (Vector<AbstractCommand> v1, Vector<AbstractCommand> v2) {
+	protected CommandManager (Vector<AbstractCommand> v1) {
 		commandStack = v1;
-		redoList = v2;
 	}
 	
 	// get instance without parameter
@@ -36,9 +33,9 @@ public class CommandManager {
 	}
 	
 	
-	public static CommandManager getInstance(Vector<AbstractCommand> v1, Vector<AbstractCommand> v2) {
+	public static CommandManager getInstance(Vector<AbstractCommand> v1) {
 		if (instance == null)
-			instance = new CommandManager(v1, v2);
+			instance = new CommandManager(v1);
 		return instance;
 	}
 	
@@ -60,8 +57,9 @@ public class CommandManager {
 			Log.i("command in Stack before undo", "name " + commandStack.elementAt(i).getClass().toString());
 		}
 		
-		for (int i = redoList.size() - 1; i >= 0; i--) {
-			Log.i("command in redolist before undo", redoList.elementAt(i).getClass().toString());
+		for (int i = RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1; i >= 0; i--) {
+			Log.i("command in redolist before undo", 
+					RedoTrack.getInstance().getRedoList(cmd.getClient()).elementAt(i).getClass().toString());
 		}
 		
 		Vector <AbstractCommand> temp = new Vector<AbstractCommand>();
@@ -84,7 +82,7 @@ public class CommandManager {
 			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand)) {
 				// the one that should be undone
 				// put into the redoList
-				redoList.add(tempCommand);
+				RedoTrack.getInstance().getRedoList(cmd.getClient()).add(tempCommand);
 				//! Notice that the redoList is increasing, later one is at behind!!!!!
 				// add the obtained undo command to the list
 				commandStack.add(cmd);
@@ -103,39 +101,57 @@ public class CommandManager {
 			Log.i("command in Stack after", "name " + commandStack.elementAt(i).getClass().toString());
 		}
 		
-		for (int i = redoList.size() - 1; i >= 0; i--) {
-			Log.i("command in redolist after undo", redoList.elementAt(i).getClass().toString());
+		for (int i = RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1; i >= 0; i--) {
+			Log.i("command in redolist after undo", 
+					RedoTrack.getInstance().getRedoList(cmd.getClient()).elementAt(i).getClass().toString());
 		}
 	}
 
+	
+	// CHANGE: for every client make a redo list for them, if there is a new fresh
+	// command which is not undo or redo, flush the specific redolist and remove all
+	// the undo in the commandStack of thet specific client
 	public void redo(AbstractCommand cmd) {
 		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
 			Log.i("command in Stack before redo", "name " + commandStack.elementAt(i).getClass().toString());
 		}
 		
-		for (int i = redoList.size() - 1; i >= 0; i--) {
-			Log.i("command in redolist before redo", redoList.elementAt(i).getClass().toString());
+		for (int i = RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1; i >= 0; i--) {
+			Log.i("command in redolist before redo", 
+					RedoTrack.getInstance().getRedoList(cmd.getClient()).elementAt(i).getClass().toString());
 		}
 		
 		// undo temp vector for save the top of the command stack
 		Vector<AbstractCommand> temp = new Vector<AbstractCommand>();
 		
-		// TODO keep a value to see if the redo list contains the client's operation
-		// vector is ordered remove
-		
-		// TODO if there is a need for memory allocation. and how to copy
+		// TODO delete the redoContains in the Client class of the current client track
+		// no need for it
 		AbstractCommand redoCommand = null;
-		for (int i = redoList.size() - 1; i >= 0; i--) {
+		/*for (int i = redoList.size() - 1; i >= 0; i--) {
 			if (redoList.elementAt(i).getClient() == cmd.getClient()) {
 				redoCommand = redoList.elementAt(i);
 				redoList.removeElementAt(i);
 				break;
 			}
+		}*/
+		// check if the redo List has element
+		// actually there is no need to check, because before sending the request
+		// the button listener will track this
+		if (!RedoTrack.getInstance().isEmpty(cmd.getClient())){
+			// get the last element
+			redoCommand = RedoTrack.getInstance().getRedoList(cmd.getClient()).lastElement();
+			// remove the last element
+			RedoTrack.getInstance().getRedoList(cmd.getClient()).removeElementAt(
+					RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1);
 		}
-		Log.i("redoList size ", String.valueOf(redoList.size()));
+		Log.i("redoList size ", String.valueOf(
+				RedoTrack.getInstance().getRedoList(cmd.getClient()).size()));
 		
-		int undoNum = Client.getInstance().getRedoListContains();
+		
+		// the undo tag in the stack is just the number
+		// NOTICE: if the redolist is empty, redo command will not be sent to server
+		int undoNum = RedoTrack.getInstance().getRedoList(cmd.getClient()).size();
 		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
 			// current command
@@ -152,7 +168,7 @@ public class CommandManager {
 			// when it is the client operation and the operation is undo
 			if (tempCommand.getClient() == cmd.getClient() && (tempCommand instanceof UndoCommand)) {
 
-				if (undoNum == 1) {
+				if (undoNum == 0) {
 					// put the command back to the stack
 					redoCommand.rewind();
 					commandStack.add(redoCommand);
@@ -175,10 +191,37 @@ public class CommandManager {
 			Log.i("command in Stack after redo", "name " + commandStack.elementAt(i).getClass().toString());
 		}
 		
-		for (int i = redoList.size() - 1; i >= 0; i--) {
-			Log.i("command in redolist after redo", redoList.elementAt(i).getClass().toString());
+		for (int i = RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1; i >= 0; i--) {
+			Log.i("command in redolist after redo", 
+					RedoTrack.getInstance().getRedoList(cmd.getClient()).elementAt(i).getClass().toString());
 		}
 		
+	}
+	
+	/**
+	 * used when a client has some action instead of undo and redo
+	 * clear the redoList
+	 * remove all the undo tag in the stack
+	 * @param client
+	 */
+	public void newCommandHandling(int client) {
+		if(!RedoTrack.getInstance().isEmpty(client)) {
+			Log.i("redoList size before newCommandHandling", String.valueOf(RedoTrack.getInstance().getRedoList(client).size()));
+			for (int i = commandStack.size() - 1; i >= 0; i--) {
+				Log.i("command in Stack after before newCommandHandling", "name " + commandStack.elementAt(i).getClass().toString());
+			}
+			for (int i = 0; i < commandStack.size(); i++){
+				if (commandStack.elementAt(i).getClient() == client &&
+						(commandStack.elementAt(i) instanceof UndoCommand)) {
+					commandStack.removeElementAt(i);
+					i--;
+				}
+			}
+			RedoTrack.getInstance().clearRedoList(client);
+			for (int i = commandStack.size() - 1; i >= 0; i--) {
+				Log.i("command in Stack after after newCommandHandling", "name " + commandStack.elementAt(i).getClass().toString());
+			}
+		}
 	}
 	
 }

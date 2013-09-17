@@ -84,10 +84,20 @@ public class CursorTrack {
 		cursorMap.put(client, cursorMap.get(client) + movement);
 	}
 	
+	/**
+	 * get Cursor
+	 * @param client
+	 * @return
+	 */
 	public int getCursor (Integer client) {
 		return cursorMap.get(client);
 	}
 	
+	
+	/**
+	 * add a new client
+	 * @param client
+	 */
 	public void addClient (int client) {
 		cursorMap.put(client, 0);
 	}

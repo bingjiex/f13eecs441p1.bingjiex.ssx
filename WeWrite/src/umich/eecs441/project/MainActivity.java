@@ -22,8 +22,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// TODO: addClient(*id*)
+		// when new client come addClient
 		CursorTrack.getInstance().addClient(0);
+		RedoTrack.getInstance().addClient(0);
+		
 		setContentView(R.layout.text_editor_screen);
 		
 		editText = (CursorWatcher) this.findViewById(R.id.txtMessage);
@@ -99,6 +101,19 @@ public class MainActivity extends Activity {
 					AbstractCommand cmd = new CursorCommand(movement);
 					CommandManager.getInstance().storeCommand(cmd);
 					cmd.execute();
+					// when there is a new command executed, we have to tell that the client
+					// can undo no matter if it is confirmed, so 
+					Client.getInstance().setCommandStackContains(
+							Client.getInstance().getCommandStackContains() + 1);
+					Client.getInstance().setRedoListContains(0);
+					//!!!! two number in Client is just for track the very instant operation of the client
+					// doesnt influence the real stack, where the change occurs when the command come back
+					
+					// Since it is not collabrify, just do as if we get the response
+					// clear
+					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
+					
+					
 				}
 			}
 			
@@ -133,6 +148,20 @@ public class MainActivity extends Activity {
 					AbstractCommand cmd = new InsertCommand(change, editText);
 					CommandManager.getInstance().storeCommand(cmd);
 					cmd.execute();
+					
+					// when there is a new command executed, we have to tell that the client
+					// can undo no matter if it is confirmed, so 
+					Client.getInstance().setCommandStackContains(
+							Client.getInstance().getCommandStackContains() + 1);
+					Client.getInstance().setRedoListContains(0);
+					//!!!! two number in Client is just for track the very instant operation of the client
+					// doesnt influence the real stack, where the change occurs when the command come back
+					
+					// Since it is not collabrify, just do as if we get the response
+					// clear
+					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
+					
+					
 					
 				}
 				
