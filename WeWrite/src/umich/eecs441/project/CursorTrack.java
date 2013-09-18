@@ -57,7 +57,7 @@ public class CursorTrack {
 	 */
 	public void moveRight(Integer client, Integer length){
 		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
-			 if (entry.getValue() >= client) {
+			 if (entry.getValue() >= cursorMap.get(client)) {
 				 cursorMap.put(entry.getKey(), entry.getValue() + length);
 			 }
 		}
@@ -70,8 +70,12 @@ public class CursorTrack {
 	 */
 	public void moveLeft(Integer client, Integer length){
 		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
-			 if (entry.getValue() >= client) {
+			 if (entry.getValue() >= cursorMap.get(client)) {
 				 cursorMap.put(entry.getKey(), entry.getValue() - length);
+			 }
+			 else if (entry.getValue() < cursorMap.get(client) && 
+					 entry.getValue() >= cursorMap.get(client) - length) {
+				 cursorMap.put(entry.getKey(), cursorMap.get(client) - length);
 			 }
 		}
 	}

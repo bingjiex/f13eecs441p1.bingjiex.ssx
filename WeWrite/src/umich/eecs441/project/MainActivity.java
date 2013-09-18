@@ -16,23 +16,50 @@ public class MainActivity extends Activity {
 	private Button redoButton;
 	private CursorWatcher editText;
 	
-	long starttime = 0;
+	// for the timer
+	// string buffer, recording the char
+	private static String buffer;
+	// keep track of the last command
+	private static String lastCommand;
+	// the time
+	private static long startTime;
+	
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// when new client come addClient
-		CursorTrack.getInstance().addClient(0);
-		RedoTrack.getInstance().addClient(0);
+		// initialize
+		buffer = "";
+		lastCommand = "";
+		
+		
+		
 		
 		setContentView(R.layout.text_editor_screen);
-		
 		editText = (CursorWatcher) this.findViewById(R.id.txtMessage);
-		
 		undoButton = (Button) this.findViewById(R.id.button2);
 		redoButton = (Button) this.findViewById(R.id.button1);
 		
+		// when new client come addClient
+		CursorTrack.getInstance().addClient(0);
+		RedoTrack.getInstance().addClient(0);
+				
+		// timer thread
+		new Thread () {
+			public void run() {
+				startTime = System.currentTimeMillis();
+				while(true) {
+					if (System.currentTimeMillis() - startTime >= 800) {
+						startTime = System.currentTimeMillis();
+						timeUp();
+					}
+				}
+				
+			}
+		}.start();
 		
 		undoButton.setOnClickListener(new Button.OnClickListener () {
 			public void onClick (View arg0) {
@@ -74,7 +101,9 @@ public class MainActivity extends Activity {
 					
 					// It should run when the client receive the redo request
 					CommandManager.getInstance().redo(cmd);
-					editText.setSelection(CursorTrack.getInstance().getCursor(Client.getInstance().getClient()));
+					if (cmd.getClient() == Client.getInstance().getClient()) {
+						editText.setSelection(CursorTrack.getInstance().getCursor(Client.getInstance().getClient()));
+					}
 				}
 			}
 			
@@ -90,6 +119,10 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				Log.i("EditText", "Trigger");
+				
+				// might need to send request for the last command
+				changeCommand("Move", "");
+				startTime = System.currentTimeMillis();
 				
 				int movement = editText.getSelectionEnd() 
 						- CursorTrack.getInstance().getCursor(Client.getInstance().getClient());
@@ -136,7 +169,7 @@ public class MainActivity extends Activity {
 					
 				}
 				else {
-					Client.getInstance().setCommandStackContains(
+					/*Client.getInstance().setCommandStackContains(
 							Client.getInstance().getCommandStackContains() + 1);
 					Log.i("onTextChanged triggered, CharSequence", s.toString());
 					Log.i("onTextChanged triggered, Current Edit Text", editText.getText().toString());
@@ -160,18 +193,20 @@ public class MainActivity extends Activity {
 					// Since it is not collabrify, just do as if we get the response
 					// clear
 					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
-					
-					
-					
+			*/		
+					String change = s.toString().substring(start, start + count - before);
+					changeCommand("Insert", change);
+					startTime = System.currentTimeMillis();
 				}
-				
-				
 			}
 		};
 		
 		editText.setTextWatcher(textWatcher);
 		editText.addTextChangedListener(editText.getTextWatcher());
+		
 	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,6 +214,68 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	/**
+	 * if time up, then according to the lastcommand, flush the buffer and send the request
+	 */
+	private synchronized void timeUp() {
+		if (buffer != "") {
+			if (lastCommand.equals("Insert")) {
+				AbstractCommand cmd = new InsertCommand(buffer, editText);
+				CommandManager.getInstance().storeCommand(cmd);
+				cmd.execute();				
+				Client.getInstance().setCommandStackContains(
+						Client.getInstance().getCommandStackContains() + 1);
+				Client.getInstance().setRedoListContains(0);
+				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 
+			} /*else {
+				AbstractCommand cmd = new RemoveCommand(buffer, editText);
+				CommandManager.getInstance().storeCommand(cmd);
+				cmd.execute();				
+				Client.getInstance().setCommandStackContains(
+						Client.getInstance().getCommandStackContains() + 1);
+				Client.getInstance().setRedoListContains(0);
+				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
+
+			}*/
+		}
+		buffer = "";
+	}
+	// TODO: command change from insert to move cursor
+	// I am considering to pass a "" as newChar
+	private synchronized void changeCommand(String command, String newChar) {
+		if (buffer != "" && !lastCommand.equals(command)) {
+			Log.i("changeCommand command changed", command);
+			if (lastCommand.equals("Insert")) {
+				AbstractCommand cmd = new InsertCommand(buffer, editText);
+				CommandManager.getInstance().storeCommand(cmd);
+				cmd.execute();				
+				Client.getInstance().setCommandStackContains(
+						Client.getInstance().getCommandStackContains() + 1);
+				Client.getInstance().setRedoListContains(0);
+				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
+			} /*else {
+				AbstractCommand cmd = new RemoveCommand(buffer, editText);
+				CommandManager.getInstance().storeCommand(cmd);
+				cmd.execute();				
+				Client.getInstance().setCommandStackContains(
+						Client.getInstance().getCommandStackContains() + 1);
+				Client.getInstance().setRedoListContains(0);
+				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
+
+			}*/
+			buffer = "";
+		}
+		lastCommand = command;
+		buffer = buffer + newChar;
+		Log.i("changeCommand append", buffer);
+	}
 	
 }
+
+
+
+
+
+
