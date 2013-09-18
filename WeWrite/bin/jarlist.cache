@@ -1,3 +1,7 @@
 # cache for current jar dependency. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
+1378500096000 2189117 69e12f4c6aeac392555f1ea86fab82b5e5e31ad4 /Users/xbjlie/Desktop/2013_Fall/EECS 441/P1/collabrify-client-android/libs/guava-14.0.1.jar
+1378495673000 2189117 69e12f4c6aeac392555f1ea86fab82b5e5e31ad4 /Users/xbjlie/Desktop/2013_Fall/EECS 441/P1/imlc-common/lib/guava-14.0.1.jar
+1378495618000 556198 4a6be13368bb64c5a0b0460632d228a1a915f58f /Users/xbjlie/Desktop/2013_Fall/EECS 441/P1/imlc-android-common/libs/android-support-v4.jar
+1379523744000 556198 4a6be13368bb64c5a0b0460632d228a1a915f58f /Users/xbjlie/Desktop/f13eecs441p1.bingjiex.ssx/WeWrite/libs/android-support-v4.jar

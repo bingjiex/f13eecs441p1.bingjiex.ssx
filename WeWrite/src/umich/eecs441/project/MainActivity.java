@@ -237,7 +237,7 @@ public class MainActivity extends Activity {
 			} else {
 				// reverse the buffer string
 				String temp = "";
-				for (int i = temp.length() - 1; i >= 0; i++) {
+				for (int i = buffer.length() - 1; i >= 0; i--) {
 					temp += buffer.charAt(i);
 				}
 				AbstractCommand cmd = new RemoveCommand(temp, editText);
@@ -255,8 +255,10 @@ public class MainActivity extends Activity {
 	// TODO: command change from insert to move cursor
 	// I am considering to pass a "" as newChar
 	private synchronized void changeCommand(String command, String newChar) {
+		Log.i("Last Command in change Command", lastCommand);
+		Log.i("Current Command in change Command", command);
+		
 		if (buffer != "" && !lastCommand.equals(command)) {
-			Log.i("changeCommand command changed", command);
 			if (lastCommand.equals("Insert")) {
 				AbstractCommand cmd = new InsertCommand(buffer, editText);
 				CommandManager.getInstance().storeCommand(cmd);
@@ -268,7 +270,7 @@ public class MainActivity extends Activity {
 			} else {
 				// reverse the buffer string
 				String temp = "";
-				for (int i = temp.length() - 1; i >= 0; i++) {
+				for (int i = buffer.length() - 1; i >= 0; i--) {
 					temp += buffer.charAt(i);
 				}
 				AbstractCommand cmd = new RemoveCommand(temp, editText);
