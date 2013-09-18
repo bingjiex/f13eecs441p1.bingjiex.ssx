@@ -160,15 +160,20 @@ public class MainActivity extends Activity {
 			}
 			
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				if (count > after) {
+					String change = s.toString().substring(start, start + count - after);
+					changeCommand("Delete", change);
+					startTime = System.currentTimeMillis();	
+				}
+				
+				
 				
 			}
 			
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 					
-				if (count < before) {
+				if (count > before) {
 					
-				}
-				else {
 					/*Client.getInstance().setCommandStackContains(
 							Client.getInstance().getCommandStackContains() + 1);
 					Log.i("onTextChanged triggered, CharSequence", s.toString());
@@ -229,8 +234,13 @@ public class MainActivity extends Activity {
 				Client.getInstance().setRedoListContains(0);
 				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 
-			} /*else {
-				AbstractCommand cmd = new RemoveCommand(buffer, editText);
+			} else {
+				// reverse the buffer string
+				String temp = "";
+				for (int i = temp.length() - 1; i >= 0; i++) {
+					temp += buffer.charAt(i);
+				}
+				AbstractCommand cmd = new RemoveCommand(temp, editText);
 				CommandManager.getInstance().storeCommand(cmd);
 				cmd.execute();				
 				Client.getInstance().setCommandStackContains(
@@ -238,7 +248,7 @@ public class MainActivity extends Activity {
 				Client.getInstance().setRedoListContains(0);
 				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 
-			}*/
+			}
 		}
 		buffer = "";
 	}
@@ -255,8 +265,13 @@ public class MainActivity extends Activity {
 						Client.getInstance().getCommandStackContains() + 1);
 				Client.getInstance().setRedoListContains(0);
 				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
-			} /*else {
-				AbstractCommand cmd = new RemoveCommand(buffer, editText);
+			} else {
+				// reverse the buffer string
+				String temp = "";
+				for (int i = temp.length() - 1; i >= 0; i++) {
+					temp += buffer.charAt(i);
+				}
+				AbstractCommand cmd = new RemoveCommand(temp, editText);
 				CommandManager.getInstance().storeCommand(cmd);
 				cmd.execute();				
 				Client.getInstance().setCommandStackContains(
@@ -264,7 +279,7 @@ public class MainActivity extends Activity {
 				Client.getInstance().setRedoListContains(0);
 				CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 
-			}*/
+			}
 			buffer = "";
 		}
 		lastCommand = command;
