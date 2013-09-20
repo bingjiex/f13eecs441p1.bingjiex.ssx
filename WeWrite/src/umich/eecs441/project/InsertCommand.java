@@ -15,12 +15,14 @@ public class InsertCommand implements AbstractCommand{
 	 * set them as arguments of every Command  
 	 */
 	
-	
+	// TODO protocol buffer needs client newChar
 	/*
 	 * every command should have a private attribute that contains the client information
 	 * and a boolean that indicate if it is confirmed
 	 */
 	// current use an int since there is no interaction, default is 0
+	private int submissionID;
+	
 	private int client;
 	
 	/**
@@ -45,6 +47,10 @@ public class InsertCommand implements AbstractCommand{
 	 */
 	public int getClient(){
 		return client;
+	}
+	
+	public int getSubmissionID() {
+		return submissionID;
 	}
 	
 	

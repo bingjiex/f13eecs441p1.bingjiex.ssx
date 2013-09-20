@@ -14,7 +14,7 @@ public class RemoveCommand implements AbstractCommand{
 	 * in the server create an instance for CursorTrack and CommandManager
 	 * set them as arguments of every Command  
 	 */
-	
+	// TODO protocol buffer needs clientID and removedChar
 	
 	/*
 	 * every command should have a private attribute that contains the client information
@@ -27,6 +27,10 @@ public class RemoveCommand implements AbstractCommand{
 	 * the char that is delete
 	 */
 	private String removedChar;
+	
+	// submissionID just for distinguish between confirmed event and unconfirmed event
+	private int submissionID;
+	
 	
 	/**
 	 * the current text on the edit text
@@ -47,12 +51,15 @@ public class RemoveCommand implements AbstractCommand{
 		return client;
 	}
 	
-	
+	public int getSubmissionID() {
+		return submissionID;
+	}
 	/**
 	 * constructor
 	 * @param myChar
 	 * @param currentText
 	 */
+	// it is for an instant operation
 	public RemoveCommand(String myChar, CursorWatcher currentText){
 		
 		// current is int type, expected to use client type
@@ -64,6 +71,9 @@ public class RemoveCommand implements AbstractCommand{
 				
 		Log.i("RemoveCommand", "Constructor");
 	}
+	
+	// TODO: if there is 
+	
 	
 	public void execute(){
 		Log.i("RemoveCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
@@ -126,24 +136,15 @@ public class RemoveCommand implements AbstractCommand{
 			return 0;
 		}
 		
-		int i = str1.length() - 1;
-		int j = str2.length() - 1;
+		int leng1 = str1.length();
 		
 		int result = 0;
 		
-		while (i >= 0 && j >= 0) {
-			if (str1.charAt(i) == str2.charAt(j)) {
-				i--;
-				j--;
+		for (int i=leng1-1; i>=0; i-- ) {
+			if (str1.charAt(i) == str2.charAt(i)) {
 				result++;
-			} else {
-				break;
 			}
 		}
-	
-		Log.i("@@@@actual text:", str2);
-		Log.i("@@@@removed string:", str1);
-		Log.i("@@@@actual removed length:", String.valueOf(result));
 		return result;
 	}
 }

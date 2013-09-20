@@ -3,6 +3,8 @@ import android.util.Log;
 
 public class RedoCommand implements AbstractCommand{
 	
+	// TODO protocol buffer needs client
+	
 	int client;
 	
 	public RedoCommand () {

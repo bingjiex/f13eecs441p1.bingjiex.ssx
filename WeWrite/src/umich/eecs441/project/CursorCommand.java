@@ -1,13 +1,16 @@
 package umich.eecs441.project;
 
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 import android.util.Log;
 
 public class CursorCommand implements AbstractCommand {
 	
 	private int client;
 	
-	
 	private int movement;
+	
+	private int submissionID;
+	
 	private CursorTrack currentTrack;
 	
 	public CursorCommand (int m) {
@@ -15,6 +18,19 @@ public class CursorCommand implements AbstractCommand {
 		movement = m;
 		currentTrack = CursorTrack.getInstance();
 	}
+	
+	// TODO protocol buffer needs client movement;
+	
+	// TODO add another constructor to accept event and push into stack
+	/*public CursorCommand (ProtocolBufferClass object) {
+		client = object.getClient();
+		movement = object.getMovement();
+		submissionID = object.getSubmissionID();
+		currentTrack = CursorTrack.getInstance();
+	}
+	*/
+	
+	
 	public int getClient(){
 		return client;
 	}
@@ -22,10 +38,28 @@ public class CursorCommand implements AbstractCommand {
 		return movement;
 	}
 	
+	public int getSubmissionID() {
+		return submissionID;
+	}
+	
 	public void execute() {
+		// TODO initialize submissionID
 		/*
 		 * send request
 		 */
+		
+		ProtocolBufferClass object = new ProtocolBufferClass (client, movement);
+		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
+				OnlineClient.getInstance(null, null).getClient() != null) {
+			try {
+				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.getBytes(), "");
+			} catch (CollabrifyException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
 		currentTrack.moveCursor(client, movement);
 		Log.i("CursorCommand", "move" + String.valueOf(movement));
 	}

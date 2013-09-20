@@ -39,11 +39,49 @@ public class CommandManager {
 		return instance;
 	}
 	
-	
+	// store an unconfirmed command
 	public void storeCommand (AbstractCommand cmd) {
 		commandStack.add(cmd);
 		Log.i("commandStack size is ", String.valueOf(commandStack.size()));
 	}
+	
+	// receive a command
+	public void receiveCommand (AbstractCommand cmd) {
+		if (cmd instanceof UndoCommand) {
+			undo(cmd);
+		} else if (cmd instanceof RedoCommand) {
+			redo(cmd);
+		} else {
+			if (cmd.getSubmissionID() == -1) {
+				cmd.rewind();
+			} else {
+				
+				Vector<AbstractCommand> temp = new Vector<AbstractCommand> ();
+				
+				for (int i = commandStack.size() - 1; i >= 0; i--) {
+					if (commandStack.elementAt(i).getSubmissionID() == cmd.getSubmissionID()) {
+						commandStack.elementAt(i).unwind();
+						commandStack.remove(i);
+						break;
+					} else {
+						AbstractCommand tempCommand = commandStack.elementAt(i);
+						commandStack.elementAt(i).unwind();
+						commandStack.remove(i);
+						temp.add(tempCommand);
+					}
+				}
+				for (int i = temp.size() - 1; i >= 0; i--) {
+					temp.elementAt(i).rewind();
+					commandStack.add(temp.elementAt(i));
+				}
+				cmd.rewind();
+				commandStack.add(cmd);
+				
+			}
+		}
+	}
+	
+	
 	
 	/**
 	 * 

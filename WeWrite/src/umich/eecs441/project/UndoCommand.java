@@ -4,6 +4,8 @@ import android.util.Log;
 
 public class UndoCommand implements AbstractCommand{
 	
+	//TODO protocol buffer needs client 
+	
 	int client;
 	
 	public UndoCommand () {

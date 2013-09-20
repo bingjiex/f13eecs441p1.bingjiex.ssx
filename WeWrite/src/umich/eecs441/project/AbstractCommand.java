@@ -33,5 +33,7 @@ public interface AbstractCommand {
 	 */
 	
 	public int getClient();
+	
+	public int getSubmissionID ();
 
 }
