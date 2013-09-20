@@ -126,15 +126,24 @@ public class RemoveCommand implements AbstractCommand{
 			return 0;
 		}
 		
-		int leng1 = str1.length();
+		int i = str1.length() - 1;
+		int j = str2.length() - 1;
 		
 		int result = 0;
 		
-		for (int i=leng1-1; i>=0; i-- ) {
-			if (str1.charAt(i) == str2.charAt(i)) {
+		while (i >= 0 && j >= 0) {
+			if (str1.charAt(i) == str2.charAt(j)) {
+				i--;
+				j--;
 				result++;
+			} else {
+				break;
 			}
 		}
+	
+		Log.i("@@@@actual text:", str2);
+		Log.i("@@@@removed string:", str1);
+		Log.i("@@@@actual removed length:", String.valueOf(result));
 		return result;
 	}
 }
