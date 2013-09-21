@@ -1,7 +1,8 @@
 package umich.eecs441.project;
 
-import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import umich.eecs441.project.proto.CursorCommandBuf.CursorCommandBufObj;
 import android.util.Log;
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
 public class CursorCommand implements AbstractCommand {
 	
@@ -47,12 +48,15 @@ public class CursorCommand implements AbstractCommand {
 		/*
 		 * send request
 		 */
-		
-		ProtocolBufferClass object = new ProtocolBufferClass (client, movement);
+		CursorCommandBufObj.Builder builder = CursorCommandBufObj.newBuilder();
+		builder.setClientID(client);
+		builder.setMovement(movement);
+		CursorCommandBufObj object = builder.build();
+
 		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
 				OnlineClient.getInstance(null, null).getClient() != null) {
 			try {
-				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.getBytes(), "");
+				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "CursorCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}
