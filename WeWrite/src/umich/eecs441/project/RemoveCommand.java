@@ -1,7 +1,8 @@
 package umich.eecs441.project;
 
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import umich.eecs441.project.proto.RemoveCommandBuf.RemoveCommandBufObj;
 import android.util.Log;
-import android.widget.EditText;
 
 /**
  * Remove command
@@ -76,6 +77,20 @@ public class RemoveCommand implements AbstractCommand{
 	
 	
 	public void execute(){
+		RemoveCommandBufObj.Builder builder = RemoveCommandBufObj.newBuilder();
+		builder.setClientID(client);
+		builder.setRemovedChar(removedChar);
+		RemoveCommandBufObj object = builder.build();
+		
+		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
+				OnlineClient.getInstance(null, null).getClient() != null) {
+			try {
+				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "RemoveCommand");
+			} catch (CollabrifyException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Log.i("RemoveCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
 	
 		currentCursor.moveLeft(client,removedChar.length());

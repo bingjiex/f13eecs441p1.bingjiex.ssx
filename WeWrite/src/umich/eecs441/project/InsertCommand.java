@@ -1,7 +1,8 @@
 package umich.eecs441.project;
 
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import umich.eecs441.project.proto.InsertCommandBuf.InsertCommandBufObj;
 import android.util.Log;
-import android.widget.EditText;
 
 /**
  * Insert command
@@ -72,6 +73,21 @@ public class InsertCommand implements AbstractCommand{
 	}
 	
 	public void execute(){
+		InsertCommandBufObj.Builder builder = InsertCommandBufObj.newBuilder();
+		builder.setClientID(client);
+		builder.setNewChar(newChar);
+		
+		InsertCommandBufObj object = builder.build();
+
+		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
+				OnlineClient.getInstance(null, null).getClient() != null) {
+			try {
+				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "InsertCommand");
+			} catch (CollabrifyException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Log.i("InsertCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
 		/*
 		 * send execute request
