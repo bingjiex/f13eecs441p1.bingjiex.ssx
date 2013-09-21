@@ -48,14 +48,14 @@
             style="@style/ButtonText"
             android:layout_width="94dp"
             android:layout_height="wrap_content"
-            android:text="@string/Redo" />
+            android:text="@string/redo" />
 
         <Button
             android:id="@+id/button2"
             style="@style/ButtonText"
             android:layout_width="94dp"
             android:layout_height="wrap_content"
-            android:text="@string/Undo" />
+            android:text="@string/undo" />
 
     </LinearLayout>
 
