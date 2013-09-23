@@ -18,6 +18,11 @@ public class MainActivity extends Activity{
 	private Button createSession;
 	private Button joinSession;
 	
+	static private String baseFileStr;
+	static private String sessionName;
+	static private int password;
+	static private int userUpperLimit;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +34,9 @@ public class MainActivity extends Activity{
 		
 		OnlineClient.getInstance(this);
 		
+		
+		
+		/*
 		createSession.setOnClickListener(new Button.OnClickListener () {
 
 			@Override
@@ -50,6 +58,7 @@ public class MainActivity extends Activity{
 		});
 		
 		
+	*/
 	}
 	
 	@Override

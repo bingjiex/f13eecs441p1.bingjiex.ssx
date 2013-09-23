@@ -19,6 +19,7 @@ import edu.umich.imlc.collabrify.client.CollabrifyClient;
 import edu.umich.imlc.collabrify.client.CollabrifyListener;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import edu.umich.imlc.collabrify.collabrify_dummy_app.MainActivity;
 
 /**
  * my own client, use int temperarily
@@ -69,39 +70,52 @@ public class OnlineClient {
 				});
 			}
 
-			/*
-			 * @Override public void onReceiveEvent(final long orderId, int
-			 * subId, String eventType, final byte[] data) {
-			 * 
-			 * Log.d("client connection", "RECEIVED SUB ID:" + subId);
-			 * 
-			 * activity.runOnUiThread(new Runnable() {
-			 * 
-			 * @Override public void run() { } }); }
-			 */
-			/*
-			 * @Override public void onReceiveSessionList(final
-			 * List<CollabrifySession> sessionList) {
-			 * 
-			 * if( sessionList.isEmpty() ) { Log.i("client connection",
-			 * "No session available"); return; } List<String> sessionNames =
-			 * new ArrayList<String>(); for( CollabrifySession s : sessionList )
-			 * { sessionNames.add(s.name()); } final AlertDialog.Builder builder
-			 * = new AlertDialog.Builder(MainActivity.this);
-			 * builder.setTitle("Choose Session").setItems(
-			 * sessionNames.toArray(new String[sessionList.size()]), new
-			 * DialogInterface.OnClickListener() {
-			 * 
-			 * @Override public void onClick(DialogInterface dialog, int which)
-			 * { try { sessionId = sessionList.get(which).id(); sessionName =
-			 * sessionList.get(which).name(); myClient.joinSession(sessionId,
-			 * null); } catch( CollabrifyException e ) { Log.e(TAG, "error", e);
-			 * } } });
-			 * 
-			 * activity.runOnUiThread(new Runnable() {
-			 * 
-			 * @Override public void run() { } }); }
-			 */
+			@Override
+			public void onReceiveEvent(final long orderId, int subId,
+					String eventType, final byte[] data) {
+
+				Log.d("client connection", "RECEIVED SUB ID:" + subId);
+
+				activity.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+					}
+				});
+			}
+
+			@Override
+			public void onReceiveSessionList(final List<CollabrifySession> sessionList) {
+	        
+				if( sessionList.isEmpty() ) {
+					Log.i("client connection", "No session available");
+					return;
+				}
+				List<String> sessionNames = new ArrayList<String>();
+				for( CollabrifySession s : sessionList ) {
+					sessionNames.add(s.name());
+				}
+				final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setTitle("Choose Session").setItems(
+						sessionNames.toArray(new String[sessionList.size()]),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								try {	
+										sessionId = sessionList.get(which).id();
+										sessionName = sessionList.get(which).name();
+										myClient.joinSession(sessionId, null);
+								} catch( CollabrifyException e ) {
+										Log.e(TAG, "error", e);
+								}
+							}
+						});
+
+				activity.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+					}
+				});
+			}
 
 			@Override
 			public void onSessionCreated(long id) {
@@ -124,50 +138,62 @@ public class OnlineClient {
 			public void onError(CollabrifyException e) {
 				Log.e("client connection", "error", e);
 			}
-			/*
-			 * @Override public void onSessionJoined(long maxOrderId, long
-			 * baseFileSize) { Log.i("client connection", "Session Joined"); if(
-			 * baseFileSize > 0 ) { //initialize buffer to receive base file
-			 * baseFileReceiveBuffer = new ByteArrayOutputStream((int)
-			 * baseFileSize); } activity.runOnUiThread(new Runnable() {
-			 * 
-			 * @Override public void run() { } }); }
-			 */
-			/*
-			 * @Override public byte[] onBaseFileChunkRequested(long
-			 * currentBaseFileSize) { // read up to max chunk size at a time
-			 * byte[] temp = new
-			 * byte[CollabrifyClient.MAX_BASE_FILE_CHUNK_SIZE]; int read = 0;
-			 * try { read = baseFileBuffer.read(temp); } catch( IOException e )
- 			 * { // TODO Auto-generated catch block e.printStackTrace(); } if(
-			 * read == -1 ) { return null; } if( read <
-			 * CollabrifyClient.MAX_BASE_FILE_CHUNK_SIZE ) { // Trim garbage
-			 * data ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			 * bos.write(temp, 0, read); temp = bos.toByteArray(); } return
-			 * temp; }
-			 * 
-			 * @Override public void onBaseFileChunkReceived(byte[]
-			 * baseFileChunk) { try { if( baseFileChunk != null ) {
-			 * 
-			 * baseFileReceiveBuffer.write(baseFileChunk); } else {
-			 * activity.runOnUiThread(new Runnable() {
-			 * 
-			 * @Override public void run() {
-			 * broadcastedText.setText(baseFileReceiveBuffer.toString()); } });
-			 * baseFileReceiveBuffer.close(); } } catch( IOException e ) { //
-			 * TODO Auto-generated catch block e.printStackTrace(); } }
-			 * 
-			 * 
-			 * @Override public void onBaseFileUploadComplete(long baseFileSize)
-			 * {
-			 * 
-			 * activity.runOnUiThread(new Runnable() {
-			 * 
-			 * @Override public void run() { } }); try { baseFileBuffer.close();
-			 * } catch( IOException e ) { // TODO Auto-generated catch block
-			 * e.printStackTrace(); } }
-			 */
+			
+			@Override
+			public void onSessionJoined(long maxOrderId, long baseFileSize) {
+				Log.i("client connection", "Session Joined");
+				if (baseFileSize > 0) { // initialize buffer to receive base
+										// file
+					baseFileReceiveBuffer = new ByteArrayOutputStream(
+							(int) baseFileSize);
+				}
+				activity.runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+					}
+				});
+			}
+			 
+	      	public void onBaseFileChunkReceived(byte[] baseFileChunk) {
+	      		try {
+	      			if( baseFileChunk != null ) {
+	      				
+	      				baseFileReceiveBuffer.write(baseFileChunk);
+	      			} else {
+	      				activity.runOnUiThread(new Runnable() {
+	      					@Override
+	      					public void run() {
+	      						broadcastedText.setText(baseFileReceiveBuffer.toString());
+	      					}
+	      				});
+	      				baseFileReceiveBuffer.close();
+	      			}
+	      		} catch( IOException e ) {
+	      			// TODO Auto-generated catch block
+	      			e.printStackTrace();
+	      		}
+	      	}
+
+	      	 
+	      	@Override
+	      	public void onBaseFileUploadComplete(long baseFileSize)	{
+	      		
+		        activity.runOnUiThread(new Runnable() {
+
+		        	@Override
+		        	public void run() {
+		        	}
+		        });
+		        try {
+		        	baseFileBuffer.close();
+		        } catch( IOException e ) {
+		          // TODO Auto-generated catch block
+		        	e.printStackTrace();
+		        }
+		     }
 		};
+	
 
 		try {
 			client = new CollabrifyClient(activity.getApplicationContext(),
