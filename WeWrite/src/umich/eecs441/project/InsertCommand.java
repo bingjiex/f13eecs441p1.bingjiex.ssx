@@ -79,10 +79,10 @@ public class InsertCommand implements AbstractCommand{
 		
 		InsertCommandBufObj object = builder.build();
 
-		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
-				OnlineClient.getInstance(null, null).getClient() != null) {
+		if (OnlineClient.getInstance().getClient().inSession() && 
+				OnlineClient.getInstance().getClient() != null) {
 			try {
-				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "InsertCommand");
+				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "InsertCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}

@@ -53,10 +53,10 @@ public class CursorCommand implements AbstractCommand {
 		builder.setMovement(movement);
 		CursorCommandBufObj object = builder.build();
 
-		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
-				OnlineClient.getInstance(null, null).getClient() != null) {
+		if (OnlineClient.getInstance().getClient().inSession() && 
+				OnlineClient.getInstance().getClient() != null) {
 			try {
-				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "CursorCommand");
+				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "CursorCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}

@@ -2,6 +2,7 @@ package umich.eecs441.project;
 
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 import umich.eecs441.project.proto.RemoveCommandBuf.RemoveCommandBufObj;
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 /**
@@ -82,10 +83,10 @@ public class RemoveCommand implements AbstractCommand{
 		builder.setRemovedChar(removedChar);
 		RemoveCommandBufObj object = builder.build();
 		
-		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
-				OnlineClient.getInstance(null, null).getClient() != null) {
+		if (OnlineClient.getInstance().getClient().inSession() && 
+				OnlineClient.getInstance().getClient() != null) {
 			try {
-				submissionID = OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "RemoveCommand");
+				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "RemoveCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}
@@ -101,7 +102,7 @@ public class RemoveCommand implements AbstractCommand{
 		Log.i("RemoveCommand", "Character removed " + removedChar);
 		Log.i("RemoveCommand, current cursor after execute", String.valueOf(currentCursor.getCursor(client)));
 	}
-	
+	// !!!!!!!!!!!!!!!!!!!!!!!!!TODO: How to return to the previous state.
 	// undo is just a signal from the server and do undo operation
 	// request send from UndoCommand
 	

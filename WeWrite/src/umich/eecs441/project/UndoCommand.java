@@ -20,10 +20,10 @@ public class UndoCommand implements AbstractCommand{
 		
 		UndoCommandBufObj object = builder.build();
 		
-		if (OnlineClient.getInstance(null, null).getClient().inSession() && 
-				OnlineClient.getInstance(null, null).getClient() != null) {
+		if (OnlineClient.getInstance().getClient().inSession() && 
+				OnlineClient.getInstance().getClient() != null) {
 			try {
-				OnlineClient.getInstance(null, null).getClient().broadcast(object.toByteArray(), "UndoCommand");
+				OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "UndoCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}

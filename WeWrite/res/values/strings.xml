@@ -10,7 +10,7 @@
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     
-    <string name="create_session">Create Session</string>\
+    <string name="create_session">Create Session</string>
     <string name="join_session">Join Session</string>
     
      <style name="ButtonText">
