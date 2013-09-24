@@ -19,7 +19,6 @@ import edu.umich.imlc.collabrify.client.CollabrifyClient;
 import edu.umich.imlc.collabrify.client.CollabrifyListener;
 import edu.umich.imlc.collabrify.client.CollabrifySession;
 import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
-import edu.umich.imlc.collabrify.collabrify_dummy_app.MainActivity;
 
 /**
  * my own client, use int temperarily
@@ -36,8 +35,6 @@ public class OnlineClient {
 
 	// TODO expected to change to client type
 	private CollabrifyClient client;
-
-	private Activity activity;
 	// for the client
 	private CollabrifyListener collabrifyListener;
 
@@ -53,24 +50,30 @@ public class OnlineClient {
 	// put the command into redo list
 	private int redoListContains;
 
-	// TODO expected to add constructor with client type argument
-	protected OnlineClient(Activity a) {
+	// for activities
+	private SessionListAccessible mainActivity;
+	
+	private EventAccessible editorActivity;
 
-		activity = a;
+	public void setEditorActivity(EventAccessible editorActivity) {
+		this.editorActivity = editorActivity;
+	}
+
+
+	// TODO expected to add constructor with client type argument
+	protected OnlineClient(Context context, SessionListAccessible main) {
+
+		commandStackContains = 0;
+		
+		mainActivity = main;
 
 		collabrifyListener = new CollabrifyAdapter() {
 			@Override
 			public void onDisconnect() {
 				Log.i("client connection", "disconnected");
-				activity.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-					}
-				});
 			}
 
-			@Override
+		/*	@Override
 			public void onReceiveEvent(final long orderId, int subId,
 					String eventType, final byte[] data) {
 
@@ -81,57 +84,28 @@ public class OnlineClient {
 					public void run() {
 					}
 				});
-			}
+			}*/
 
 			@Override
 			public void onReceiveSessionList(final List<CollabrifySession> sessionList) {
 	        
 				if( sessionList.isEmpty() ) {
 					Log.i("client connection", "No session available");
+					// no element
+					mainActivity.setGuard(1);
 					return;
 				}
-				List<String> sessionNames = new ArrayList<String>();
-				for( CollabrifySession s : sessionList ) {
-					sessionNames.add(s.name());
-				}
-				final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setTitle("Choose Session").setItems(
-						sessionNames.toArray(new String[sessionList.size()]),
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								try {	
-										sessionId = sessionList.get(which).id();
-										sessionName = sessionList.get(which).name();
-										myClient.joinSession(sessionId, null);
-								} catch( CollabrifyException e ) {
-										Log.e(TAG, "error", e);
-								}
-							}
-						});
-
-				activity.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-					}
-				});
+				mainActivity.setSessionList(sessionList);
+				// obtain elements
+				mainActivity.setGuard(2);
+				return;
 			}
 
 			@Override
 			public void onSessionCreated(long id) {
 				Log.i("client connection", "Session created, id: " + id);
 				sessionId = id;
-				activity.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						if (activity instanceof MainActivity) {
-							Log.i("into MainActivity", "Success!");
-							Log.i("session create!", "success!");
-						}
-
-					}
-				});
+				
 			}
 
 			@Override
@@ -139,7 +113,7 @@ public class OnlineClient {
 				Log.e("client connection", "error", e);
 			}
 			
-			@Override
+/*			@Override
 			public void onSessionJoined(long maxOrderId, long baseFileSize) {
 				Log.i("client connection", "Session Joined");
 				if (baseFileSize > 0) { // initialize buffer to receive base
@@ -191,24 +165,25 @@ public class OnlineClient {
 		          // TODO Auto-generated catch block
 		        	e.printStackTrace();
 		        }
-		     }
+		     }*/
 		};
 	
 
 		try {
-			client = new CollabrifyClient(activity.getApplicationContext(),
+			client = new CollabrifyClient(context,
 					"ssx@umich.edu", "Shao", "441fall2013@umich.edu",
 					"XY3721425NoScOpE", false, collabrifyListener);
 		} catch (CollabrifyException e) {
 			e.printStackTrace();
 		}
 
-		commandStackContains = 0;
+
 	}
 
-	public static OnlineClient getInstance(Activity activity) {
+	
+	public static OnlineClient getInstance(Context context, SessionListAccessible main) {
 		if (instance == null)
-			instance = new OnlineClient(activity);
+			instance = new OnlineClient(context, main);
 		return instance;
 	}
 

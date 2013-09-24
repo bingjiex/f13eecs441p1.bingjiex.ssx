@@ -9,7 +9,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-public class TextEditorActivity extends Activity {
+public class TextEditorActivity extends Activity
+							    implements EventAccessible {
 
 	private Button undoButton;
 	private Button redoButton;
