@@ -105,5 +105,13 @@ public class CursorTrack {
 	public void addClient (int client) {
 		cursorMap.put(client, 0);
 	}
-
+	
+	/*
+	 * get CursorMap
+	 * 
+	 */
+	public HashMap<Integer, Integer> getCursorMap() {
+		return cursorMap;
+	}
+	
 }

@@ -162,8 +162,9 @@ public class MainActivity extends Activity
 									  } else {
 										  password = passwordEdit.getText().toString();
 										  
-										  if (!userUpperLimitEdit.getText().toString().matches("^[1-9]\\d*$")) {
-											  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer.", Toast.LENGTH_LONG);
+										  if (!userUpperLimitEdit.getText().toString().matches("^[1-9]\\d*$") ||
+												  Integer.getInteger(userUpperLimitEdit.getText().toString())>5000) {
+											  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer under 5000.", Toast.LENGTH_LONG);
 											  toast.show();
 											  inputValid = false;
 										  } else {

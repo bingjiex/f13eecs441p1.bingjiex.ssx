@@ -1,9 +1,11 @@
 package umich.eecs441.project;
 
-import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import java.util.HashMap;
+import java.util.Map;
+
 import umich.eecs441.project.proto.RemoveCommandBuf.RemoveCommandBufObj;
-import android.annotation.SuppressLint;
 import android.util.Log;
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
 /**
  * Remove command
@@ -24,6 +26,8 @@ public class RemoveCommand implements AbstractCommand{
 	 */
 	// current use an int since there is no interaction, default is 0
 	private int client;
+	
+	private HashMap<Integer, Integer> trackMap;
 	
 	/**
 	 * the char that is delete
@@ -66,10 +70,12 @@ public class RemoveCommand implements AbstractCommand{
 		
 		// current is int type, expected to use client type
 		client = Client.getInstance().getClient();
+		trackMap = null;
 		
 		currentCursor = CursorTrack.getInstance();
 		removedChar = myChar;
 		text = currentText;
+		
 				
 		Log.i("RemoveCommand", "Constructor");
 	}
@@ -89,6 +95,13 @@ public class RemoveCommand implements AbstractCommand{
 				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "RemoveCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
+			}
+		}
+		
+		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
+			if (isBetween(entry)) {
+				Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
+				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
 			}
 		}
 		
@@ -119,7 +132,19 @@ public class RemoveCommand implements AbstractCommand{
 		int cursorPosition = currentCursor.getCursor(client);
 		temp = temp.substring(0, cursorPosition) + removedChar + temp.substring(cursorPosition);
 		text.setText(temp);
-		currentCursor.moveRight(client, removedChar.length());
+		
+		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
+			if (trackMap.containsKey(entry.getKey())) {
+				currentCursor.moveCursor(entry.getKey(), trackMap.get(entry.getKey()));
+			} else {
+				currentCursor.moveCursor(entry.getKey(), removedChar.length());
+			}
+			
+		}
+		
+		trackMap.clear();
+		
+		//currentCursor.moveRight(client, removedChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
@@ -138,10 +163,16 @@ public class RemoveCommand implements AbstractCommand{
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
 		text.setText(temp);
 		
+		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
+			if (isBetween(entry)) {
+				Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
+				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
+			}
+		}
+		
 		currentCursor.moveLeft(client, actualRemoveLength);
 		text.addTextChangedListener(text.getTextWatcher());
 	}
-	
 	
 	/* 
 	 * str1: the removed string
@@ -163,4 +194,12 @@ public class RemoveCommand implements AbstractCommand{
 		}
 		return result;
 	}
+	
+	private boolean isBetween (Map.Entry<Integer, Integer> entry) {
+		Integer senderCursorPosBefore = currentCursor.getCursor(client);
+		Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
+		if (entry.getValue()<senderCursorPosBefore && entry.getValue()>senderCursorPosAfter) return true;
+		else return false;
+	}
+
 }
