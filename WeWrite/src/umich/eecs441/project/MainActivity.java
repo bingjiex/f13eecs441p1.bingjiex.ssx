@@ -158,8 +158,9 @@ public class MainActivity extends Activity
 											  toast.show();
 											  inputValid = false;
 										  } else {
+											  int upperLimit =  Integer.getInteger(userUpperLimitEdit.getText().toString());
 											  if (!userUpperLimitEdit.getText().toString().matches("^[1-9]\\d*$") 
-													  || Integer.getInteger(userUpperLimitEdit.getText().toString())>5000) {
+													  || upperLimit>5000) {
 												  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer under 5000.", Toast.LENGTH_LONG);
 												  toast.show();
 												  inputValid = false;
