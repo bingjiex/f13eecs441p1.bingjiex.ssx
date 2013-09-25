@@ -40,7 +40,6 @@ public class MainActivity extends Activity
 	
 	private boolean inputValid;
 	
-	
 	static private long sessionId;
 	// obtain the session list
 	private List <CollabrifySession> sessionList;
@@ -292,11 +291,6 @@ public class MainActivity extends Activity
 	public static long getSessionId() {
 		return sessionId;
 	}
-	
-	
-	
-	
-	
 	
 	public static String getSessionName() {
 		return sessionName;
