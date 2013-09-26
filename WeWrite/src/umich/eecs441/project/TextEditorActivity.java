@@ -1,6 +1,8 @@
 package umich.eecs441.project;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,11 +11,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 public class TextEditorActivity extends Activity
 							    implements EventAccessible {
 
 	private Button undoButton;
 	private Button redoButton;
+	private Button leaveButton;
+	private Button terminateButton;
 	private CursorWatcher editText;
 	
 	// for the timer
@@ -39,6 +44,8 @@ public class TextEditorActivity extends Activity
 		editText = (CursorWatcher) this.findViewById(R.id.txtMessage);
 		undoButton = (Button) this.findViewById(R.id.button2);
 		redoButton = (Button) this.findViewById(R.id.button1);
+		leaveButton = (Button)this.findViewById(R.id.button3);
+		terminateButton = (Button)this.findViewById(R.id.button4);
 		
 		// when new client come addClient
 		CursorTrack.getInstance().addClient(0);
@@ -57,6 +64,64 @@ public class TextEditorActivity extends Activity
 				
 			}
 		}.start();
+		
+		leaveButton.setOnClickListener(new Button.OnClickListener () {
+			public void onClick (View v) {
+				LinearLayout layout = new LinearLayout(TextEditorActivity.this);
+				layout.setOrientation(LinearLayout.VERTICAL);
+				
+				final AlertDialog.Builder alertDialogbuilder = new AlertDialog.Builder(TextEditorActivity.this);
+				alertDialogbuilder.setTitle("Leave Session");
+				alertDialogbuilder.setMessage("Are you sure to leave the session?");
+				
+				alertDialogbuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			            // TODO: leave the session, back to the main menu. !!how about the session's creator?
+			        }
+			     });
+				
+			    alertDialogbuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			            // TODO: back to the texteditor screen
+			        }
+			     });
+			    alertDialogbuilder.setView(layout);
+			    final AlertDialog alertDialog = alertDialogbuilder.create();
+			    alertDialog.show();
+			}
+		
+		});
+		
+		terminateButton.setOnClickListener(new Button.OnClickListener () {
+			public void onClick (View v) {
+				LinearLayout layout = new LinearLayout(TextEditorActivity.this);
+				layout.setOrientation(LinearLayout.VERTICAL);
+				
+				final AlertDialog.Builder alertDialogbuilder = new AlertDialog.Builder(TextEditorActivity.this);
+				alertDialogbuilder.setTitle("Leave Session");
+				alertDialogbuilder.setMessage("Are you sure to leave the session?");
+				
+				alertDialogbuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			            // TODO: should first check whether the current user is the creator. if not should pop up
+			        	// 		warning window and back to the session. otherwise, should terminate the session and
+			        	//		back to the main menu.
+			        }
+			     });
+				
+			    alertDialogbuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int which) { 
+			        	// TODO:should first check whether the current user is the creator. if not should pop up
+			        	// 		warning window and back to the session. otherwise, should back to the texteditor
+			        	// 		screen.
+			        }
+			     });
+			    alertDialogbuilder.setView(layout);
+			    final AlertDialog alertDialog = alertDialogbuilder.create();
+			    alertDialog.show();
+			}
+		
+		});
 		
 		undoButton.setOnClickListener(new Button.OnClickListener () {
 			public void onClick (View arg0) {

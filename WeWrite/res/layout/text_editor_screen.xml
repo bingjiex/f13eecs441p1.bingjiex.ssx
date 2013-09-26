@@ -55,7 +55,7 @@
             android:layout_width="94dp"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonbackground1"
-            android:layout_weight=0.5""
+            android:layout_weight="0.5"
             android:textSize="20sp"
             android:text="@string/redo" />
 
