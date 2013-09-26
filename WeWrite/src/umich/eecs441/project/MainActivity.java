@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -119,7 +120,7 @@ public class MainActivity extends Activity
 				final EditText baseFileStrEdit = new EditText(MainActivity.this);
 				baseFileStrEdit.setHint("Base file");
 				baseFileStrEdit.setHeight(500);
-				
+				baseFileStrEdit.setGravity(Gravity.TOP);
 			
 				layout.addView(baseFileStrEdit);
 				

@@ -8,10 +8,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="6" >
+        android:layout_weight="0.3"
+        android:orientation="vertical" >
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="13" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="4.1" >
+        </LinearLayout>
+        
         <umich.eecs441.project.CursorWatcher
             android:id="@+id/txtMessage"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:ems="10"
@@ -19,21 +33,14 @@
             android:hint="@string/hint"
             android:inputType="textMultiLine" 
             android:textSize="34sp"
-            android:layout_weight="3" 
+            android:layout_weight="4.8" 
             android:singleLine="false">
         </umich.eecs441.project.CursorWatcher>
-  
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5" >
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent" 
-            android:layout_weight="1.5" >
+            android:layout_weight="4.1" >
         </LinearLayout>
 
     </LinearLayout>
@@ -41,19 +48,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="2" >
 
         <Button
             android:id="@+id/button1"
             android:layout_width="94dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/buttonbackground1"
+            android:layout_weight=0.5""
+            android:textSize="20sp"
             android:text="@string/redo" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="94dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/buttonbackground1"
+            android:layout_weight="0.5"
+            android:textSize="20sp"
             android:text="@string/undo" />
+        
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonbackground3"
+            android:layout_weight="0.5"
+            android:textSize="20sp"
+            android:text="@string/leave" />
+        
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonbackground2"
+            android:layout_weight="0.5"
+            android:textSize="20sp"
+            android:text="@string/terminate" />
 
     </LinearLayout>
 
