@@ -3,7 +3,6 @@
 
     <string name="app_name">WeWrite</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     
     <string name="hint">Please type in the text.</string>
     
@@ -14,5 +13,13 @@
     
     <string name="create_session">Create Session</string>
     <string name="join_session">Join Session</string>
+    
+     <style name="ButtonTextStyle">
+        <item name="android:textColor">#032461</item>
+        <item name="android:shadowColor">#ffffff</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
 
 </resources>
