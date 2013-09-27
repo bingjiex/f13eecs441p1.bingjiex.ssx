@@ -43,6 +43,10 @@ public class CursorCommand implements AbstractCommand {
 		return submissionID;
 	}
 	
+	public void setSubmissionID () {
+		submissionID = -1;
+	}
+	
 	public void execute() {
 		// TODO initialize submissionID
 		/*

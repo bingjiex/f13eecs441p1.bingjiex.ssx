@@ -8,6 +8,7 @@ int drawable buttongen 0x7f020004
 int drawable editorbackground 0x7f020005
 int drawable ic_action_search 0x7f020006
 int drawable ic_launcher 0x7f020007
+int drawable shadow 0x7f020008
 int id LinearLayout1 0x7f080000
 int id action_settings 0x7f080006
 int id button1 0x7f080001
@@ -33,3 +34,4 @@ int string undo 0x7f040007
 int string url 0x7f040004
 int style AppBaseTheme 0x7f050000
 int style AppTheme 0x7f050001
+int style ButtonTextStyle 0x7f050002

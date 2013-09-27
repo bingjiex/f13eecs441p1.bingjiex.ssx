@@ -54,7 +54,9 @@ public class InsertCommand implements AbstractCommand{
 		return submissionID;
 	}
 	
-	
+	public void setSubmissionID() {
+		submissionID = -1;
+	}
 	/**
 	 * constructor
 	 * @param myChar

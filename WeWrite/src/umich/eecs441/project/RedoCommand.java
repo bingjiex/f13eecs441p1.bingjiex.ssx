@@ -54,4 +54,9 @@ public class RedoCommand implements AbstractCommand{
 		return 0;
 	}
 	
+	// never use
+	public void setSubmissionID () {
+		return;
+	}
+	
 }

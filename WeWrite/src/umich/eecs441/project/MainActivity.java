@@ -82,66 +82,13 @@ public class MainActivity extends Activity
 							}
 							builder.setTitle("Choose Session").setItems(
 									sessionNames.toArray(new String[sessionList.size()]), 
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog, int which) {
-											sessionId = sessionList.get(which).id();
-											
-											if (sessionList.get(which).isPasswordProtected()) {
-												// Check the password
-												LinearLayout layout = new LinearLayout(MainActivity.this);
-												layout.setOrientation(LinearLayout.VERTICAL);
-												
-												final AlertDialog.Builder alertDialogbuilder = new AlertDialog.Builder(MainActivity.this);
-												alertDialogbuilder.setTitle("Join Session");
-												alertDialogbuilder.setMessage("Enter the password of the session");
-												
-												final EditText sessionPasswordEdit = new EditText(MainActivity.this);
-												sessionPasswordEdit.setHint("Password");
-												layout.addView(sessionPasswordEdit);
-												
-												alertDialogbuilder.setPositiveButton(android.R.string.ok, null);
-												alertDialogbuilder.setNegativeButton(android.R.string.cancel, null);
-												alertDialogbuilder.setView(layout);
-												
-												final AlertDialog alertDialog = alertDialogbuilder.create();
-												alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-	
-												    @Override
-												    public void onShow(DialogInterface dialog) {
-	
-												        Button ok = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-												        ok.setOnClickListener(new View.OnClickListener() {
-	
-												            @Override
-												            public void onClick(View view) {
-												            	String password = sessionPasswordEdit.getText().toString();
-												            	// TODO: @@@get the corresponding password
-												            	if (password.equals())
-												            	// TODO: pass createNewSession to textEditorActivity
-												            }
-												        });
-												        
-												        Button cancel = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-												        cancel.setOnClickListener(new View.OnClickListener() {
-												        	 @Override
-													            public void onClick(View view) {
-												        		 alertDialog.dismiss();
-												        }	
-												        });
-	
-												    }
-												});
-											} else {
-												// No need to check password
-												createNewSession = false;
-												// TODO: pass createNewSession to textEditorActivity
-											}
-											
-											
-										}
-									});
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(
+									DialogInterface dialog, int which) {
+									sessionId = sessionList.get(which).id();
+								}
+							});
 						}
  					}
 				};
@@ -165,18 +112,6 @@ public class MainActivity extends Activity
 				final EditText sessionNameEdit = new EditText(MainActivity.this);
 				sessionNameEdit.setHint("Session Name");
 				layout.addView(sessionNameEdit);
-				
-				final CheckBox noPasswordCheckBox = new CheckBox(MainActivity.this);
-				noPasswordCheckBox.setText("No password");
-				layout.addView(noPasswordCheckBox);
-				
-				final EditText passwordEdit = new EditText(MainActivity.this);
-				passwordEdit.setHint("Password");
-				layout.addView(passwordEdit);
-				
-				final EditText userUpperLimitEdit = new EditText(MainActivity.this);
-				userUpperLimitEdit.setHint("User number upper limit");
-				layout.addView(userUpperLimitEdit);
 				
 				final EditText baseFileStrEdit = new EditText(MainActivity.this);
 				baseFileStrEdit.setHint("Base file");
@@ -206,52 +141,14 @@ public class MainActivity extends Activity
 									  toast.show();
 									  inputValid = false;
 								  } else {
-									  sessionName = sessionNameEdit.getText().toString(); 
-									  noPasswordCheckBox.setOnClickListener(new OnClickListener() {
-										  
-										  @Override
-										  public void onClick(View v) {
-											if (((CheckBox) v).isChecked()) {
-												// TODO: assign the noPassword value to the new session
-												noPassword = true;
-											}
-									 
-										  }
-										});
-									  if (!noPassword && passwordEdit.getText().toString().isEmpty()) {
-										  Toast toast = Toast.makeText(MainActivity.this, "Password cannot be empty.", Toast.LENGTH_LONG);
-										  toast.show();
-										  inputValid = false;
-									  } else if (!noPassword && passwordEdit.getText().toString()!=null) {
-										  password = passwordEdit.getText().toString();
-										  
-										  // TODO: test upper limit=6000
-										  if (userUpperLimitEdit.getText().toString().isEmpty()) {
-											  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer under 5000.", Toast.LENGTH_LONG);
-											  toast.show();
-											  inputValid = false;
-										  } else {
-											  int upperLimit =  Integer.getInteger(userUpperLimitEdit.getText().toString());
-											  if (!userUpperLimitEdit.getText().toString().matches("^[1-9]\\d*$") 
-													  || upperLimit>5000) {
-												  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer under 5000.", Toast.LENGTH_LONG);
-												  toast.show();
-												  inputValid = false;
-											  } else {
-												  userUpperLimit = Integer.getInteger(userUpperLimitEdit.getText().toString());
-												  baseFileStr = baseFileStrEdit.getEditableText().toString();
-											  }
-										  }
+										baseFileStr = baseFileStrEdit.getEditableText().toString();
 									  }
-									  
-								  }
-				            	
 				            	if (inputValid) {
 				            		// TODO: pass createNewSession to the textEditorActivity
 				            		createNewSession = true;
 				            	}
 				            	
-				            }
+				            }   
 				        });
 				        
 				        Button cancel = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);

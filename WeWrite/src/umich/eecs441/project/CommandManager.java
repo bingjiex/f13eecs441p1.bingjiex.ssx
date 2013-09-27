@@ -47,12 +47,18 @@ public class CommandManager {
 	
 	// receive a command
 	public void receiveCommand (AbstractCommand cmd) {
+		// !! if there is no user in the map
+		// add in cursor map and redo map
+		CursorTrack.getInstance().addClient(cmd.getClient());
+		CursorTrack.getInstance().addClient(cmd.getClient());
 		if (cmd instanceof UndoCommand) {
 			undo(cmd);
 		} else if (cmd instanceof RedoCommand) {
 			redo(cmd);
 		} else {
 			if (cmd.getSubmissionID() == -1) {
+				// go into stack
+				commandStack.add(cmd);
 				cmd.rewind();
 			} else {
 				
@@ -75,6 +81,7 @@ public class CommandManager {
 					commandStack.add(temp.elementAt(i));
 				}
 				cmd.rewind();
+				// add to commandStack
 				commandStack.add(cmd);
 				
 			}

@@ -35,5 +35,7 @@ public interface AbstractCommand {
 	public int getClient();
 	
 	public int getSubmissionID ();
+	// add setSubmissionID to set flag to confirmed, -1
+	public void setSubmissionID ();
 
 }

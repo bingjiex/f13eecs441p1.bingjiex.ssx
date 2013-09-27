@@ -60,6 +60,10 @@ public class RemoveCommand implements AbstractCommand{
 	public int getSubmissionID() {
 		return submissionID;
 	}
+	
+	public void setSubmissionID () {
+		submissionID = -1;
+	}
 	/**
 	 * constructor
 	 * @param myChar

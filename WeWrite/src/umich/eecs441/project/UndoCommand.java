@@ -52,4 +52,8 @@ public class UndoCommand implements AbstractCommand{
 		return 0;
 	}
 	
+	public void setSubmissionID () {
+		return;
+	}
+	
 }
