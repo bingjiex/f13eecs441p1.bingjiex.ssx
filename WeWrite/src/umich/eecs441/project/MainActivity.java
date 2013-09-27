@@ -8,11 +8,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -29,10 +30,13 @@ public class MainActivity extends Activity
 	static private String sessionName;
 	static private String password;
 	static private int userUpperLimit;
+	static private long sessionId;
+	static private boolean noPassword = false;
+	
+	static public boolean createNewSession = false;
 	
 	private boolean inputValid;
 	
-	static private long sessionId;
 	// obtain the session list
 	private List <CollabrifySession> sessionList;
 	// 0 means in progress
@@ -83,6 +87,59 @@ public class MainActivity extends Activity
 										public void onClick(
 												DialogInterface dialog, int which) {
 											sessionId = sessionList.get(which).id();
+											
+											if (sessionList.get(which).isPasswordProtected()) {
+												// Check the password
+												LinearLayout layout = new LinearLayout(MainActivity.this);
+												layout.setOrientation(LinearLayout.VERTICAL);
+												
+												final AlertDialog.Builder alertDialogbuilder = new AlertDialog.Builder(MainActivity.this);
+												alertDialogbuilder.setTitle("Join Session");
+												alertDialogbuilder.setMessage("Enter the password of the session");
+												
+												final EditText sessionPasswordEdit = new EditText(MainActivity.this);
+												sessionPasswordEdit.setHint("Password");
+												layout.addView(sessionPasswordEdit);
+												
+												alertDialogbuilder.setPositiveButton(android.R.string.ok, null);
+												alertDialogbuilder.setNegativeButton(android.R.string.cancel, null);
+												alertDialogbuilder.setView(layout);
+												
+												final AlertDialog alertDialog = alertDialogbuilder.create();
+												alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+	
+												    @Override
+												    public void onShow(DialogInterface dialog) {
+	
+												        Button ok = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+												        ok.setOnClickListener(new View.OnClickListener() {
+	
+												            @Override
+												            public void onClick(View view) {
+												            	String password = sessionPasswordEdit.getText().toString();
+												            	// TODO: @@@get the corresponding password
+												            	if (password.equals())
+												            	// TODO: pass createNewSession to textEditorActivity
+												            }
+												        });
+												        
+												        Button cancel = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+												        cancel.setOnClickListener(new View.OnClickListener() {
+												        	 @Override
+													            public void onClick(View view) {
+												        		 alertDialog.dismiss();
+												        }	
+												        });
+	
+												    }
+												});
+											} else {
+												// No need to check password
+												createNewSession = false;
+												// TODO: pass createNewSession to textEditorActivity
+											}
+											
+											
 										}
 									});
 						}
@@ -109,6 +166,10 @@ public class MainActivity extends Activity
 				sessionNameEdit.setHint("Session Name");
 				layout.addView(sessionNameEdit);
 				
+				final CheckBox noPasswordCheckBox = new CheckBox(MainActivity.this);
+				noPasswordCheckBox.setText("No password");
+				layout.addView(noPasswordCheckBox);
+				
 				final EditText passwordEdit = new EditText(MainActivity.this);
 				passwordEdit.setHint("Password");
 				layout.addView(passwordEdit);
@@ -123,6 +184,7 @@ public class MainActivity extends Activity
 				baseFileStrEdit.setGravity(Gravity.TOP);
 			
 				layout.addView(baseFileStrEdit);
+				
 				
 				alertDialogbuilder.setPositiveButton(android.R.string.ok, null);
 				alertDialogbuilder.setNegativeButton(android.R.string.cancel, null);
@@ -145,12 +207,22 @@ public class MainActivity extends Activity
 									  inputValid = false;
 								  } else {
 									  sessionName = sessionNameEdit.getText().toString(); 
-									  
-									  if (passwordEdit.getText().toString().isEmpty()) {
+									  noPasswordCheckBox.setOnClickListener(new OnClickListener() {
+										  
+										  @Override
+										  public void onClick(View v) {
+											if (((CheckBox) v).isChecked()) {
+												// TODO: assign the noPassword value to the new session
+												noPassword = true;
+											}
+									 
+										  }
+										});
+									  if (!noPassword && passwordEdit.getText().toString().isEmpty()) {
 										  Toast toast = Toast.makeText(MainActivity.this, "Password cannot be empty.", Toast.LENGTH_LONG);
 										  toast.show();
 										  inputValid = false;
-									  } else {
+									  } else if (!noPassword && passwordEdit.getText().toString()!=null) {
 										  password = passwordEdit.getText().toString();
 										  
 										  // TODO: test upper limit=6000
@@ -174,6 +246,11 @@ public class MainActivity extends Activity
 									  
 								  }
 				            	
+				            	if (inputValid) {
+				            		// TODO: pass createNewSession to the textEditorActivity
+				            		createNewSession = true;
+				            	}
+				            	
 				            }
 				        });
 				        
@@ -181,57 +258,13 @@ public class MainActivity extends Activity
 				        cancel.setOnClickListener(new View.OnClickListener() {
 				        	 @Override
 					            public void onClick(View view) {
+				        		 createNewSession = false;
 				        		 alertDialog.dismiss();
 				        }	
 				        });
 
 				    }
 				});
-		/*		alertDialogbuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-				  if (sessionNameEdit.getText().toString().isEmpty()) {
-					  Toast toast = Toast.makeText(MainActivity.this, "Session name connot be empty.", Toast.LENGTH_LONG);
-					  toast.show();
-					  inputValid = false;
-				  } else {
-					  sessionName = sessionNameEdit.getText().toString(); 
-					  
-					  if (passwordEdit.getText().toString().isEmpty()) {
-						  Toast toast = Toast.makeText(MainActivity.this, "Password cannot be empty.", Toast.LENGTH_LONG);
-						  toast.show();
-						  inputValid = false;
-					  } else {
-						  password = passwordEdit.getText().toString();
-						  
-						  if (userUpperLimitEdit.getText().toString().isEmpty() || 
-								  !isInteger(userUpperLimitEdit.getText().toString())) {
-							  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer.", Toast.LENGTH_LONG);
-							  toast.show();
-							  inputValid = false;
-						  } else if (Integer.getInteger(userUpperLimitEdit.getText().toString()) <= 0) {
-							  Toast toast = Toast.makeText(MainActivity.this, "User number upper limit should be a positive integer.", Toast.LENGTH_LONG);
-							  toast.show();
-							  inputValid = false;
-						  } else {
-							  userUpperLimit = Integer.getInteger(userUpperLimitEdit.getText().toString());
-							  baseFileStr = baseFileStrEdit.getEditableText().toString();
-						  }
-					  }
-					  
-				  }
-				  
-			  Log.i("Session Name is", sessionName);
-			  Log.i("Password is", String.valueOf(password));
-			  Log.i("User upper limit is", String.valueOf(userUpperLimit));
-			  Log.i("Base file is", baseFileStr);
-				  }
-				});
-
-				alertDialogbuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				  public void onClick(DialogInterface dialog, int whichButton) {
-				    // close the alertdialog
-				  }
-				});*/
 				
 				alertDialog.show();
 				
@@ -308,6 +341,8 @@ public class MainActivity extends Activity
 		return baseFileStr;
 	}
 
-	
+	public static boolean isNoPassword() {
+		return noPassword;
+	}
 
 }
