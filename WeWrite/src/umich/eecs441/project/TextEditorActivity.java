@@ -33,6 +33,17 @@ public class TextEditorActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Log.i("TextEditorActivity onCreate", "get sessionName  " + MainActivity.getSessionName());
+		Log.i("TextEditorActivity onCreate", "get Maximum people  " + String.valueOf(MainActivity.getUserUpperLimit()));
+		Log.i("TextEditorActivity onCreate", "get base file" + MainActivity.getBaseFileStr());
+		
+		if (MainActivity.getBaseFileStr() == null) {
+			
+		} else {
+			
+		}
+		
+		
 		// initialize
 		buffer = "";
 		lastCommand = "";

@@ -89,15 +89,16 @@ public class OnlineClient {
 			@Override
 			public void onReceiveSessionList(final List<CollabrifySession> sessionList) {
 	        
+				Log.i("onReceiveSessionList", "entered!");
 				if( sessionList.isEmpty() ) {
-					Log.i("client connection", "No session available");
+					Log.i("onReceiveSessionList", "No session available");
 					// no element
-					mainActivity.setGuard(1);
+					mainActivity.noListFound();;
 					return;
 				}
 				mainActivity.setSessionList(sessionList);
 				// obtain elements
-				mainActivity.setGuard(2);
+				Log.i("onReceiveSessionList", "get session list");
 				return;
 			}
 

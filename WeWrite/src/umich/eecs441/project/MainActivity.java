@@ -7,13 +7,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -23,12 +23,12 @@ import edu.umich.imlc.collabrify.client.CollabrifySession;
 public class MainActivity extends Activity
 						  implements SessionListAccessible {
 
+	private static String TAG = "test";
 	private Button createSession;
 	private Button joinSession;
 	
 	static private String baseFileStr;
 	static private String sessionName;
-	static private String password;
 	static private int userUpperLimit;
 	static private long sessionId;
 	static private boolean noPassword = false;
@@ -40,7 +40,12 @@ public class MainActivity extends Activity
 	// obtain the session list
 	private List <CollabrifySession> sessionList;
 	// 0 means in progress
-	private int optionGuard = 0;
+//	private int optionGuard = 0;
+	
+	private ArrayList<String> temp = new ArrayList<String>();
+	
+	//
+	private ProgressDialog waitingDialog;
 	
 	
 	@Override
@@ -58,12 +63,23 @@ public class MainActivity extends Activity
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				final ProgressDialog waitingDialog = ProgressDialog.show(MainActivity.this, "Waiting...", "Obtaining Sessions", true);
+				Log.i("@@", "@@");
+				try {
+					Log.i("@@", "@@");
+					OnlineClient.getInstance().getClient().requestSessionList(temp);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Log.e(TAG, "@@@error", e);
+				}
+				Log.i("joinsession ON click", "show progressDialog");
+				waitingDialog = ProgressDialog.show(MainActivity.this, "Waiting...", "Obtaining Sessions", true);
 				
-				new Thread () {
+				/*new Thread () {
 					public void run () {
+						Log.i("find list thread", "run");
 						while (optionGuard == 0) {}
 						if (optionGuard == 1) {
+							Log.i("find list thread", "no list");
 							waitingDialog.dismiss();
 							final AlertDialog.Builder WrongUserInformationDialog = new AlertDialog.Builder(MainActivity.this);
 							WrongUserInformationDialog.setTitle("No Availabel Session");
@@ -73,6 +89,7 @@ public class MainActivity extends Activity
 							return;
 							
 						} else {
+							Log.i("find list thread", "list");
 							waitingDialog.dismiss();
 							final AlertDialog.Builder builder = new AlertDialog.Builder(
 									MainActivity.this);
@@ -91,7 +108,7 @@ public class MainActivity extends Activity
 							});
 						}
  					}
-				};
+				}.run();*/
 			}
 			
 		});
@@ -141,11 +158,17 @@ public class MainActivity extends Activity
 									  toast.show();
 									  inputValid = false;
 								  } else {
-										baseFileStr = baseFileStrEdit.getEditableText().toString();
+									  sessionName = sessionNameEdit.getText().toString();
+									  baseFileStr = baseFileStrEdit.getEditableText().toString();
 									  }
 				            	if (inputValid) {
 				            		// TODO: pass createNewSession to the textEditorActivity
 				            		createNewSession = true;
+				            		alertDialog.dismiss();
+				            		Intent intent = new Intent();
+				    				intent.setClass(MainActivity.this, TextEditorActivity.class);
+				    				startActivity(intent);
+				    				MainActivity.this.finish();
 				            	}
 				            	
 				            }   
@@ -208,14 +231,33 @@ public class MainActivity extends Activity
 	public void setSessionList(List<CollabrifySession> list) {
 		// TODO Auto-generated method stub
 		sessionList = new ArrayList(list);
-		
+		Log.i("find list thread", "list");
+		waitingDialog.dismiss();
+		final AlertDialog.Builder builder = new AlertDialog.Builder(
+				MainActivity.this);
+		ArrayList <String> sessionNames = new ArrayList<String>();
+		for (CollabrifySession e : sessionList) {
+			sessionNames.add(e.name());
+		}
+		builder.setTitle("Choose Session").setItems(
+				sessionNames.toArray(new String[sessionList.size()]), 
+		new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(
+				DialogInterface dialog, int which) {
+				sessionId = sessionList.get(which).id();
+			}
+		});
 	}
-
-	@Override
-	public void setGuard(int guard) {
-		// TODO Auto-generated method stub
-		optionGuard = guard;
-		
+	public void noListFound() {
+		Log.i("find list thread", "no list");
+		waitingDialog.dismiss();
+		final AlertDialog.Builder WrongUserInformationDialog = new AlertDialog.Builder(MainActivity.this);
+		WrongUserInformationDialog.setTitle("No Availabel Session");
+		WrongUserInformationDialog.setMessage("Please create one");
+		WrongUserInformationDialog.setPositiveButton("OK", null);
+		WrongUserInformationDialog.show();
+		return;
 	}
 		
 	public static long getSessionId() {
@@ -226,9 +268,6 @@ public class MainActivity extends Activity
 		return sessionName;
 	}
 
-	public static String getPassword() {
-		return password;
-	}
 
 	public static int getUserUpperLimit() {
 		return userUpperLimit;
