@@ -31,8 +31,6 @@ public class OnlineClient {
 
 	private static OnlineClient instance = null;
 
-	private static final Level LOGGING_LEVEL = Level.ALL;
-
 	// TODO expected to change to client type
 	private CollabrifyClient client;
 	// for the client
@@ -40,8 +38,6 @@ public class OnlineClient {
 
 	// session ID
 	private long sessionId;
-	// session name
-	private String sessionName;
 
 	// initial with 0, tells if the two lists contains actions
 	private int commandStackContains;
@@ -54,6 +50,12 @@ public class OnlineClient {
 	private SessionListAccessible mainActivity;
 	
 	private EventAccessible editorActivity;
+	
+	
+	// the basefile for close.
+	ByteArrayInputStream baseFileBuffer; 
+	
+	ByteArrayOutputStream baseFileReceiveBuffer;
 
 	public void setEditorActivity(EventAccessible editorActivity) {
 		this.editorActivity = editorActivity;
@@ -73,18 +75,13 @@ public class OnlineClient {
 				Log.i("client connection", "disconnected");
 			}
 
-		/*	@Override
+			@Override
 			public void onReceiveEvent(final long orderId, int subId,
 					String eventType, final byte[] data) {
 
 				Log.d("client connection", "RECEIVED SUB ID:" + subId);
-
-				activity.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-					}
-				});
-			}*/
+				editorActivity.eventReceived(eventType, data);
+			}
 
 			@Override
 			public void onReceiveSessionList(final List<CollabrifySession> sessionList) {
@@ -114,7 +111,7 @@ public class OnlineClient {
 				Log.e("client connection", "error", e);
 			}
 			
-/*			@Override
+			@Override
 			public void onSessionJoined(long maxOrderId, long baseFileSize) {
 				Log.i("client connection", "Session Joined");
 				if (baseFileSize > 0) { // initialize buffer to receive base
@@ -122,12 +119,7 @@ public class OnlineClient {
 					baseFileReceiveBuffer = new ByteArrayOutputStream(
 							(int) baseFileSize);
 				}
-				activity.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-					}
-				});
+				Log.i("onSessionJoined", "success");
 			}
 			 
 	      	public void onBaseFileChunkReceived(byte[] baseFileChunk) {
@@ -136,12 +128,7 @@ public class OnlineClient {
 	      				
 	      				baseFileReceiveBuffer.write(baseFileChunk);
 	      			} else {
-	      				activity.runOnUiThread(new Runnable() {
-	      					@Override
-	      					public void run() {
-	      						broadcastedText.setText(baseFileReceiveBuffer.toString());
-	      					}
-	      				});
+	      				editorActivity.setEditorText(baseFileReceiveBuffer.toString());
 	      				baseFileReceiveBuffer.close();
 	      			}
 	      		} catch( IOException e ) {
@@ -151,22 +138,49 @@ public class OnlineClient {
 	      	}
 
 	      	 
-	      	@Override
-	      	public void onBaseFileUploadComplete(long baseFileSize)	{
-	      		
-		        activity.runOnUiThread(new Runnable() {
+	      	 /*
+		      * (non-Javadoc)
+		      * 
+		      * @see
+		      * edu.umich.imlc.collabrify.client.CollabrifyAdapter#onBaseFileChunkRequested
+		      * (long)
+		    */
+			// TODO: How to use this function?
+		    @Override
+		    public byte[] onBaseFileChunkRequested(long currentBaseFileSize) {
+		        
+		    	ByteArrayInputStream baseFileBuffer = 
+		    			new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
+		    	// read up to max chunk size at a time
+		    	byte[] temp = new byte[CollabrifyClient.MAX_BASE_FILE_CHUNK_SIZE];
+		    	int read = 0;
+		    	try {
+		    		read = baseFileBuffer.read(temp);
+		    	} catch( IOException e ) {
+		    		// TODO Auto-generated catch block
+		    		e.printStackTrace();
+		    	}
+		    	if( read == -1 ) {
+		    		return null;
+		    	}
+		    	if( read < CollabrifyClient.MAX_BASE_FILE_CHUNK_SIZE ) {
+		    		// Trim garbage data
+		    		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		    		bos.write(temp, 0, read);
+		    		temp = bos.toByteArray();
+		    	}
+		    	return temp;
+		    }
+	      	 
 
-		        	@Override
-		        	public void run() {
-		        	}
-		        });
+	      	public void onBaseFileUploadComplete(long baseFileSize)	{
 		        try {
 		        	baseFileBuffer.close();
 		        } catch( IOException e ) {
 		          // TODO Auto-generated catch block
 		        	e.printStackTrace();
 		        }
-		     }*/
+		     }
 		};
 	
 
@@ -175,7 +189,6 @@ public class OnlineClient {
 			client = new CollabrifyClient(context,
 					"ssx@umich.edu", "Shao", "441fall2013@umich.edu",
 					"XY3721425NoScOpE", false, collabrifyListener);
-			Log.i("!@!@!@!@!@!@!@!", "!@!@!@!@!@!@!");
 		} catch (CollabrifyException e) {
 			e.printStackTrace();
 		}
@@ -187,7 +200,6 @@ public class OnlineClient {
 	public static OnlineClient getInstance(Context context, SessionListAccessible main) {
 		if (instance == null)
 			instance = new OnlineClient(context, main);
-		Log.i("11111", "111111");
 		return instance;
 	}
 
@@ -223,5 +235,6 @@ public class OnlineClient {
 	public void setRedoListContains(int redoListContains) {
 		this.redoListContains = redoListContains;
 	}
+	
 
 }

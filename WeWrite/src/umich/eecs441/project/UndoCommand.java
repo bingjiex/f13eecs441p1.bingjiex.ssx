@@ -10,8 +10,13 @@ public class UndoCommand implements AbstractCommand{
 	
 	int client;
 	
+	public UndoCommand (int c) {
+		client = c;
+	}
+	
+	// for local
 	public UndoCommand () {
-		client = Client.getInstance().getClient();
+		client = (int)OnlineClient.getInstance().getClientID();
 	}
 	
 	public void execute() {

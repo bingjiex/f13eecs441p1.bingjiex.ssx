@@ -10,7 +10,8 @@ import android.util.Log;
  *
  */
 
-
+// TODO: think about if enough time should be reserved for a joined-in client finish all the event?
+// TODO: if there is a new event comes, we should consider to send the message.
 public class CommandManager {
 	
 	private static CommandManager instance = null;
@@ -50,7 +51,7 @@ public class CommandManager {
 		// !! if there is no user in the map
 		// add in cursor map and redo map
 		CursorTrack.getInstance().addClient(cmd.getClient());
-		CursorTrack.getInstance().addClient(cmd.getClient());
+		RedoTrack.getInstance().addClient(cmd.getClient());
 		if (cmd instanceof UndoCommand) {
 			undo(cmd);
 		} else if (cmd instanceof RedoCommand) {
@@ -59,7 +60,7 @@ public class CommandManager {
 			if (cmd.getSubmissionID() == -1) {
 				// go into stack
 				commandStack.add(cmd);
-				cmd.rewind();
+				cmd.rewind(); 
 			} else {
 				
 				Vector<AbstractCommand> temp = new Vector<AbstractCommand> ();
@@ -67,7 +68,7 @@ public class CommandManager {
 				for (int i = commandStack.size() - 1; i >= 0; i--) {
 					if (commandStack.elementAt(i).getSubmissionID() == cmd.getSubmissionID()) {
 						commandStack.elementAt(i).unwind();
-						commandStack.remove(i);
+						commandStack.remove(i); 
 						break;
 					} else {
 						AbstractCommand tempCommand = commandStack.elementAt(i);
@@ -81,7 +82,9 @@ public class CommandManager {
 					commandStack.add(temp.elementAt(i));
 				}
 				cmd.rewind();
+				// set submissionID -1
 				// add to commandStack
+				cmd.setSubmissionID();
 				commandStack.add(cmd);
 				
 			}
@@ -124,7 +127,8 @@ public class CommandManager {
 			commandStack.remove(i);
 			
 			// when it is the client operation and the operation is not undo
-			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand)) {
+			// !!! and the command is confirmed
+			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand) && cmd.getSubmissionID() == -1) {
 				// the one that should be undone
 				// put into the redoList
 				RedoTrack.getInstance().getRedoList(cmd.getClient()).add(tempCommand);
@@ -204,7 +208,7 @@ public class CommandManager {
 			
 			// unwind current command
 			tempCommand.unwind();
-			Log.i("redo's unwind", String.valueOf(CursorTrack.getInstance().getCursor(Client.getInstance().getClient())));
+			Log.i("redo's unwind", String.valueOf(cmd.getClient()));
 			// delete command
 			commandStack.remove(i);
 			

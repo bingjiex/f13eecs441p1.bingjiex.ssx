@@ -52,15 +52,17 @@ public class CursorTrack {
 	
 	/**
 	 * move all the cursors that after this client cursors right by length
+	 * and move the current client by length
 	 * @param client
 	 * @return 
 	 */
 	public void moveRight(Integer client, Integer length){
 		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
-			 if (entry.getValue() >= cursorMap.get(client)) {
+			 if (entry.getValue() > cursorMap.get(client)) {
 				 cursorMap.put(entry.getKey(), entry.getValue() + length);
 			 }
 		}
+		cursorMap.put(client, cursorMap.get(client) + length);
 	}
 	/**
 	 * move all the cursors that after this client cursors left by length
@@ -68,6 +70,7 @@ public class CursorTrack {
 	 * @param client, length
 	 * @return 
 	 */
+	// canbe used in insert and remove
 	public void moveLeft(Integer client, Integer length){
 		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
 			 if (entry.getValue() >= cursorMap.get(client)) {

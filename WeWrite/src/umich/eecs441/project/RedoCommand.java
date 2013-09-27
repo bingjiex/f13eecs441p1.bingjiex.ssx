@@ -9,8 +9,14 @@ public class RedoCommand implements AbstractCommand{
 	
 	int client;
 	
+	public RedoCommand (int c) {
+		client = c;
+	}
+	
+	
+	// for local user to use
 	public RedoCommand () {
-		client = Client.getInstance().getClient();
+		client = (int)OnlineClient.getInstance().getClientID();
 	}
 	
 	public void execute() {

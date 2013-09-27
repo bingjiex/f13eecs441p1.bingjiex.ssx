@@ -12,12 +12,24 @@ public class CursorCommand implements AbstractCommand {
 	
 	private int submissionID;
 	
-	private CursorTrack currentTrack;
 	
-	public CursorCommand (int m) {
-		client = Client.getInstance().getClient();
+	/**
+	 * the current text on the edit text
+	 */
+	private CursorWatcher text;
+	
+	// for receice command
+	public CursorCommand (int m, int c, CursorWatcher currentText) {
+		client = c;
 		movement = m;
-		currentTrack = CursorTrack.getInstance();
+		text = currentText;
+	}
+	
+	// for local operation
+	public CursorCommand (int m, CursorWatcher currentText) {
+		client = (int)OnlineClient.getInstance().getClientID();
+		movement = m;
+		text = currentText;
 	}
 	
 	// TODO protocol buffer needs client movement;
@@ -27,7 +39,7 @@ public class CursorCommand implements AbstractCommand {
 		client = object.getClient();
 		movement = object.getMovement();
 		submissionID = object.getSubmissionID();
-		currentTrack = CursorTrack.getInstance();
+		CursorTrack.getInstance() = CursorTrack.getInstance();
 	}
 	*/
 	
@@ -66,9 +78,12 @@ public class CursorCommand implements AbstractCommand {
 			}
 		}
 		
-		
-		
-		currentTrack.moveCursor(client, movement);
+		int currentPos = CursorTrack.getInstance().getCursor(client);
+		if (movement<0 && currentPos+movement <= 0) 
+			CursorTrack.getInstance().moveCursor(client, -currentPos);
+		else if (movement>0 && currentPos+movement >= text.getText().toString().length())  
+			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
+		else CursorTrack.getInstance().moveCursor(client, movement);
 		Log.i("CursorCommand", "move" + String.valueOf(movement));
 	}
 	
@@ -77,7 +92,7 @@ public class CursorCommand implements AbstractCommand {
 		
 		Log.i("Cursor moving", "from " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		
-		currentTrack.moveCursor(client, -movement);
+		CursorTrack.getInstance().moveCursor(client, -movement);
 		
 		Log.i("Cursor moving", "to " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		
@@ -85,7 +100,7 @@ public class CursorCommand implements AbstractCommand {
 	
 	public void rewind() {
 		Log.i("CursorCommand", "rewind");
-		currentTrack.moveCursor(client, movement);
+		CursorTrack.getInstance().moveCursor(client, movement);
 	}
 	
 	

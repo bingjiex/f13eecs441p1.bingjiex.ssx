@@ -43,7 +43,7 @@ public class MainActivity extends Activity
 	
 	private ArrayList<String> temp = new ArrayList<String>();
 	
-	//
+	// waitingDialog
 	private ProgressDialog waitingDialog;
 	
 	
@@ -58,7 +58,6 @@ public class MainActivity extends Activity
 		
 		OnlineClient.getInstance(this.getApplicationContext(), this);
 		
-		Log.i("22222", "22222");
 		
 		
 		joinSession.setOnClickListener(new Button.OnClickListener () {
@@ -251,6 +250,11 @@ public class MainActivity extends Activity
 			public void onClick(
 				DialogInterface dialog, int which) {
 				sessionId = sessionList.get(which).id();
+				// switch to the activity
+				Intent intent = new Intent();
+				intent.setClass(MainActivity.this, TextEditorActivity.class);
+				startActivity(intent);
+				MainActivity.this.finish();
 			}
 		});
 		MainActivity.this.runOnUiThread(new Runnable() {
@@ -269,8 +273,16 @@ public class MainActivity extends Activity
 		WrongUserInformationDialog.setTitle("No Availabel Session");
 		WrongUserInformationDialog.setMessage("Please create one");
 		WrongUserInformationDialog.setPositiveButton("OK", null);
-		WrongUserInformationDialog.show();
-		return;
+		
+		// why use a unOnUiThread
+		MainActivity.this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				WrongUserInformationDialog.show();
+			}
+			
+		});
 	}
 		
 	public static long getSessionId() {
@@ -288,10 +300,6 @@ public class MainActivity extends Activity
 
 	public static String getBaseFileStr() {
 		return baseFileStr;
-	}
-
-	public static boolean isNoPassword() {
-		return noPassword;
 	}
 
 }

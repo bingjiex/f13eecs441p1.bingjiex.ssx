@@ -43,10 +43,6 @@ public class RemoveCommand implements AbstractCommand{
 	 */
 	private CursorWatcher text;
 	
-	/**
-	 * the cursor instance
-	 */
-	private CursorTrack currentCursor; 
 	
 	
 	/**
@@ -69,14 +65,22 @@ public class RemoveCommand implements AbstractCommand{
 	 * @param myChar
 	 * @param currentText
 	 */
+	
+	public RemoveCommand (String myChar, int c, CursorWatcher currentText) {
+		client = c;
+		removedChar = myChar;
+		text = currentText;
+		trackMap = new HashMap<Integer, Integer>();
+	}
+	
+	
+	
 	// it is for an instant operation
-	public RemoveCommand(String myChar, CursorWatcher currentText){
+	public RemoveCommand(String myChar, CursorWatcher currentText, HashMap<Integer, Integer> recoverMap){
 		
 		// current is int type, expected to use client type
-		client = Client.getInstance().getClient();
-		trackMap = null;
-		
-		currentCursor = CursorTrack.getInstance();
+		client = (int)OnlineClient.getInstance().getClientID();
+		trackMap = recoverMap;
 		removedChar = myChar;
 		text = currentText;
 		
@@ -102,22 +106,22 @@ public class RemoveCommand implements AbstractCommand{
 			}
 		}
 		
-		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
+		/*for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (isBetween(entry)) {
-				Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
+				Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - removedChar.length();
 				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
 			}
 		}
-		
-		Log.i("RemoveCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
+		*/
+		Log.i("RemoveCommand, current cursor before execute", String.valueOf(CursorTrack.getInstance().getCursor(client)));
 	
-		currentCursor.moveLeft(client,removedChar.length());
+//		CursorTrack.getInstance().moveLeft(client,removedChar.length());
 		
 		/*
 		 * Store to the command manager log, when Command is constructed, use getInstance store!!!
 		 */		
 		Log.i("RemoveCommand", "Character removed " + removedChar);
-		Log.i("RemoveCommand, current cursor after execute", String.valueOf(currentCursor.getCursor(client)));
+		Log.i("RemoveCommand, current cursor after execute", String.valueOf(CursorTrack.getInstance().getCursor(client)));
 	}
 	// !!!!!!!!!!!!!!!!!!!!!!!!!TODO: How to return to the previous state.
 	// undo is just a signal from the server and do undo operation
@@ -133,22 +137,20 @@ public class RemoveCommand implements AbstractCommand{
 		 */
 		// it should be able to change the text on the edit text
 		String temp = text.getText().toString();
-		int cursorPosition = currentCursor.getCursor(client);
+		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		temp = temp.substring(0, cursorPosition) + removedChar + temp.substring(cursorPosition);
 		text.setText(temp);
 		
-		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
+		for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (trackMap.containsKey(entry.getKey())) {
-				currentCursor.moveCursor(entry.getKey(), trackMap.get(entry.getKey()));
-			} else {
-				currentCursor.moveCursor(entry.getKey(), removedChar.length());
+				CursorTrack.getInstance().getCursorMap().put(entry.getKey(), trackMap.get(entry.getKey()));
 			}
-			
 		}
+		CursorTrack.getInstance().moveRight(client,	removedChar.length());
 		
 		trackMap.clear();
 		
-		//currentCursor.moveRight(client, removedChar.length());
+		//CursorTrack.getInstance().moveRight(client, removedChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
@@ -158,7 +160,7 @@ public class RemoveCommand implements AbstractCommand{
 		Log.i("RemoveCommand", "Rewind");
 		String temp = text.getText().toString();
 		
-		int cursorPosition = currentCursor.getCursor(client);
+		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		
 		String subStrBeforeCursor = temp.substring(0, cursorPosition);
 		
@@ -167,14 +169,14 @@ public class RemoveCommand implements AbstractCommand{
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
 		text.setText(temp);
 		
-		for (Map.Entry<Integer, Integer> entry : currentCursor.getCursorMap().entrySet()) {
-			if (isBetween(entry)) {
-				Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
+		for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
+			if (isBetween(entry, actualRemoveLength)) {
+				Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - removedChar.length();
 				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
 			}
 		}
 		
-		currentCursor.moveLeft(client, actualRemoveLength);
+		CursorTrack.getInstance().moveLeft(client, actualRemoveLength);
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
@@ -199,10 +201,10 @@ public class RemoveCommand implements AbstractCommand{
 		return result;
 	}
 	
-	private boolean isBetween (Map.Entry<Integer, Integer> entry) {
-		Integer senderCursorPosBefore = currentCursor.getCursor(client);
-		Integer senderCursorPosAfter = currentCursor.getCursor(client) - removedChar.length();
-		if (entry.getValue()<senderCursorPosBefore && entry.getValue()>senderCursorPosAfter) return true;
+	private boolean isBetween (Map.Entry<Integer, Integer> entry, int actualLength) {
+		Integer senderCursorPosBefore = CursorTrack.getInstance().getCursor(client);
+		Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - actualLength;
+		if (entry.getValue() < senderCursorPosBefore && entry.getValue() > senderCursorPosAfter) return true;
 		else return false;
 	}
 

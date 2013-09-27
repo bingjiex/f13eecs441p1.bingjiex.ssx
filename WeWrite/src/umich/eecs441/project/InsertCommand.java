@@ -36,10 +36,7 @@ public class InsertCommand implements AbstractCommand{
 	 */
 	private CursorWatcher text;
 	
-	/**
-	 * the cursor instance
-	 */
-	private CursorTrack currentCursor; 
+
 	
 	
 	/**
@@ -62,12 +59,20 @@ public class InsertCommand implements AbstractCommand{
 	 * @param myChar
 	 * @param currentText
 	 */
+	public InsertCommand (String myChar, int c, CursorWatcher currentText) {
+		newChar = myChar;
+		client = c;
+		text = currentText;
+	}
+	
+	
+	
+	// for local user construct command
 	public InsertCommand(String myChar, CursorWatcher currentText){
 		
 		// current is int type, expected to use client type
-		client = Client.getInstance().getClient();
+		client = (int)OnlineClient.getInstance().getClientID();
 		
-		currentCursor = CursorTrack.getInstance();
 		newChar = myChar;
 		text = currentText;
 				
@@ -90,19 +95,19 @@ public class InsertCommand implements AbstractCommand{
 			}
 		}
 		
-		Log.i("InsertCommand, current cursor before execute", String.valueOf(currentCursor.getCursor(client)));
+		Log.i("InsertCommand, current cursor before execute", String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		/*
 		 * send execute request
-		 * increment the all the cursor after the current cursor position by 1 for rewind
+		 * increment all the cursor after the current cursor position by 1 for rewind
 		 * since after this operation there might be delete from other place 
 		 */
-		currentCursor.moveRight(client, newChar.length());
+//		CursorTrack.getInstance().moveRight(client, newChar.length());
 		
 		/*
 		 * Store to the command manager log, when Command is constructed, use getInstance store!!!
 		 */		
 		Log.i("InsertCommand", "Character inserted " + newChar);
-		Log.i("InsertCommand, current cursor after execute", String.valueOf(currentCursor.getCursor(client)));
+		Log.i("InsertCommand, current cursor after execute", String.valueOf(CursorTrack.getInstance().getCursor(client)));
 	}
 	
 	// undo is just a signal from the server and do undo operation
@@ -118,10 +123,10 @@ public class InsertCommand implements AbstractCommand{
 		 */
 		// it should be able to change the text on the edit text
 		String temp = text.getText().toString();
-		int cursorPosition = currentCursor.getCursor(client);
+		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		temp = temp.substring(0,cursorPosition - newChar.length()) + temp.substring(cursorPosition);
 		text.setText(temp);
-		currentCursor.moveLeft(client, newChar.length());
+		CursorTrack.getInstance().moveLeft(client, newChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
@@ -130,10 +135,10 @@ public class InsertCommand implements AbstractCommand{
 		text.removeTextChangedListener(text.getTextWatcher());
 		Log.i("InsertCommand", "Rewind");
 		String temp = text.getText().toString();
-		int cursorPosition = currentCursor.getCursor(client);
+		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		temp = temp.substring(0, cursorPosition) + newChar + temp.substring(cursorPosition);
 		text.setText(temp);
-		currentCursor.moveRight(client, newChar.length());
+		CursorTrack.getInstance().moveRight(client, newChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
