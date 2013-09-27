@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/buttonbackground1"
             android:layout_weight="0.5"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="@string/undo" />
 
         <Button
@@ -69,7 +69,7 @@
             android:layout_weight="0.5"
             android:background="@drawable/buttonbackground1"
             android:text="@string/redo"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
         
         <Button
             android:id="@+id/button3"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/buttonbackground3"
             android:layout_weight="0.5"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="@string/leave" />
         
         <Button
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/buttonbackground2"
             android:layout_weight="0.5"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="@string/terminate" />
 
     </LinearLayout>
