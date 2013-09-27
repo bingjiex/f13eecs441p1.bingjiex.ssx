@@ -23,7 +23,6 @@ import edu.umich.imlc.collabrify.client.CollabrifySession;
 public class MainActivity extends Activity
 						  implements SessionListAccessible {
 
-	private static String TAG = "test";
 	private Button createSession;
 	private Button joinSession;
 	
@@ -59,17 +58,19 @@ public class MainActivity extends Activity
 		
 		OnlineClient.getInstance(this.getApplicationContext(), this);
 		
+		Log.i("22222", "22222");
+		
+		
 		joinSession.setOnClickListener(new Button.OnClickListener () {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.i("@@", "@@");
 				try {
 					Log.i("@@", "@@");
+					temp.add("sample");
 					OnlineClient.getInstance().getClient().requestSessionList(temp);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					Log.e(TAG, "@@@error", e);
 				}
 				Log.i("joinsession ON click", "show progressDialog");
 				waitingDialog = ProgressDialog.show(MainActivity.this, "Waiting...", "Obtaining Sessions", true);
@@ -230,14 +231,18 @@ public class MainActivity extends Activity
 	@Override
 	public void setSessionList(List<CollabrifySession> list) {
 		// TODO Auto-generated method stub
-		sessionList = new ArrayList(list);
+		sessionList = new ArrayList<CollabrifySession>(list);
 		Log.i("find list thread", "list");
 		waitingDialog.dismiss();
 		final AlertDialog.Builder builder = new AlertDialog.Builder(
 				MainActivity.this);
+
 		ArrayList <String> sessionNames = new ArrayList<String>();
 		for (CollabrifySession e : sessionList) {
 			sessionNames.add(e.name());
+		}
+		for (String s : sessionNames) {
+			Log.i("sessionName", s);
 		}
 		builder.setTitle("Choose Session").setItems(
 				sessionNames.toArray(new String[sessionList.size()]), 
@@ -246,6 +251,14 @@ public class MainActivity extends Activity
 			public void onClick(
 				DialogInterface dialog, int which) {
 				sessionId = sessionList.get(which).id();
+			}
+		});
+		MainActivity.this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				builder.show();
 			}
 		});
 	}

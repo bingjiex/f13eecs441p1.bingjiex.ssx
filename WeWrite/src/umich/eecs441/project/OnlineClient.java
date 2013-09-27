@@ -171,9 +171,11 @@ public class OnlineClient {
 	
 
 		try {
+			Log.i("create client", "create!");
 			client = new CollabrifyClient(context,
 					"ssx@umich.edu", "Shao", "441fall2013@umich.edu",
 					"XY3721425NoScOpE", false, collabrifyListener);
+			Log.i("!@!@!@!@!@!@!@!", "!@!@!@!@!@!@!");
 		} catch (CollabrifyException e) {
 			e.printStackTrace();
 		}
@@ -185,6 +187,7 @@ public class OnlineClient {
 	public static OnlineClient getInstance(Context context, SessionListAccessible main) {
 		if (instance == null)
 			instance = new OnlineClient(context, main);
+		Log.i("11111", "111111");
 		return instance;
 	}
 

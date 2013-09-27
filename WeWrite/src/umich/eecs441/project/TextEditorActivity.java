@@ -1,5 +1,10 @@
 package umich.eecs441.project;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
+import edu.umich.imlc.collabrify.client.exceptions.ConnectException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -37,8 +42,20 @@ public class TextEditorActivity extends Activity
 		Log.i("TextEditorActivity onCreate", "get Maximum people  " + String.valueOf(MainActivity.getUserUpperLimit()));
 		Log.i("TextEditorActivity onCreate", "get base file" + MainActivity.getBaseFileStr());
 		
-		if (MainActivity.getBaseFileStr() == null) {
-			
+		if (MainActivity.getBaseFileStr().equals("") || MainActivity.getBaseFileStr() == null) {
+			// TODO: getUserUpperLimit
+			List<String> temp = new ArrayList<String>();
+			temp.add("sample");
+			try {
+				Log.i("createSession", "no base file");
+				OnlineClient.getInstance().getClient().createSession(MainActivity.getSessionName(), temp, null, MainActivity.getUserUpperLimit());
+			} catch (ConnectException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CollabrifyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
 			
 		}
