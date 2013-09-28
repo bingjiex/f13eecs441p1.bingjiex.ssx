@@ -25,9 +25,9 @@ public class RemoveCommand implements AbstractCommand{
 	 * and a boolean that indicate if it is confirmed
 	 */
 	// current use an int since there is no interaction, default is 0
-	private int client;
+	private long client;
 	
-	private HashMap<Integer, Integer> trackMap;
+	private HashMap<Long, Integer> trackMap;
 	
 	/**
 	 * the char that is delete
@@ -49,7 +49,7 @@ public class RemoveCommand implements AbstractCommand{
 	 * get the client of the operation
 	 * @return client, int
 	 */
-	public int getClient(){
+	public long getClient(){
 		return client;
 	}
 	
@@ -57,8 +57,8 @@ public class RemoveCommand implements AbstractCommand{
 		return submissionID;
 	}
 	
-	public void setSubmissionID () {
-		submissionID = -1;
+	public void setSubmissionID (int subId) {
+		submissionID = subId;
 	}
 	/**
 	 * constructor
@@ -66,23 +66,23 @@ public class RemoveCommand implements AbstractCommand{
 	 * @param currentText
 	 */
 	
-	public RemoveCommand (String myChar, int c, CursorWatcher currentText) {
+	public RemoveCommand (String myChar, int c) {
 		client = c;
 		removedChar = myChar;
-		text = currentText;
-		trackMap = new HashMap<Integer, Integer>();
+		text = TextEditorActivity.getCursorWatcher();
+		trackMap = new HashMap<Long, Integer>();
 	}
 	
 	
 	
 	// it is for an instant operation
-	public RemoveCommand(String myChar, CursorWatcher currentText, HashMap<Integer, Integer> recoverMap){
+	public RemoveCommand(String myChar, HashMap<Long, Integer> recoverMap){
 		
 		// current is int type, expected to use client type
 		client = (int)OnlineClient.getInstance().getClientID();
 		trackMap = recoverMap;
 		removedChar = myChar;
-		text = currentText;
+		text = TextEditorActivity.getCursorWatcher();
 		
 				
 		Log.i("RemoveCommand", "Constructor");
@@ -93,7 +93,7 @@ public class RemoveCommand implements AbstractCommand{
 	
 	public void execute(){
 		RemoveCommandBufObj.Builder builder = RemoveCommandBufObj.newBuilder();
-		builder.setClientID(client);
+		builder.setClientID((int)client);
 		builder.setRemovedChar(removedChar);
 		RemoveCommandBufObj object = builder.build();
 		
@@ -141,7 +141,7 @@ public class RemoveCommand implements AbstractCommand{
 		temp = temp.substring(0, cursorPosition) + removedChar + temp.substring(cursorPosition);
 		text.setText(temp);
 		
-		for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
+		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (trackMap.containsKey(entry.getKey())) {
 				CursorTrack.getInstance().getCursorMap().put(entry.getKey(), trackMap.get(entry.getKey()));
 			}
@@ -169,7 +169,7 @@ public class RemoveCommand implements AbstractCommand{
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
 		text.setText(temp);
 		
-		for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
+		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (isBetween(entry, actualRemoveLength)) {
 				Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - removedChar.length();
 				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
@@ -201,7 +201,7 @@ public class RemoveCommand implements AbstractCommand{
 		return result;
 	}
 	
-	private boolean isBetween (Map.Entry<Integer, Integer> entry, int actualLength) {
+	private boolean isBetween (Map.Entry<Long, Integer> entry, int actualLength) {
 		Integer senderCursorPosBefore = CursorTrack.getInstance().getCursor(client);
 		Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - actualLength;
 		if (entry.getValue() < senderCursorPosBefore && entry.getValue() > senderCursorPosAfter) return true;

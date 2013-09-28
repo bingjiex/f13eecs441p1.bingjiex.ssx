@@ -6,7 +6,7 @@ import edu.umich.imlc.collabrify.client.exceptions.CollabrifyException;
 
 public class CursorCommand implements AbstractCommand {
 	
-	private int client;
+	private long client;
 	
 	private int movement;
 	
@@ -19,17 +19,21 @@ public class CursorCommand implements AbstractCommand {
 	private CursorWatcher text;
 	
 	// for receice command
-	public CursorCommand (int m, int c, CursorWatcher currentText) {
+	public CursorCommand (int m, int c) {
+		
 		client = c;
 		movement = m;
-		text = currentText;
+		text = TextEditorActivity.getCursorWatcher();
+		Log.i("CusorCommand constructor with clientID", "clientID" + String.valueOf(client));
 	}
 	
 	// for local operation
-	public CursorCommand (int m, CursorWatcher currentText) {
+	public CursorCommand (int m) {
+		
 		client = (int)OnlineClient.getInstance().getClientID();
 		movement = m;
-		text = currentText;
+		text = TextEditorActivity.getCursorWatcher();
+		Log.i("CusorCommand constructor local", "clientID" + String.valueOf(client));
 	}
 	
 	// TODO protocol buffer needs client movement;
@@ -44,7 +48,7 @@ public class CursorCommand implements AbstractCommand {
 	*/
 	
 	
-	public int getClient(){
+	public long getClient(){
 		return client;
 	}
 	public int getMovement() { 
@@ -55,36 +59,54 @@ public class CursorCommand implements AbstractCommand {
 		return submissionID;
 	}
 	
-	public void setSubmissionID () {
-		submissionID = -1;
+	public void setSubmissionID (int subId) {
+		submissionID = subId;
 	}
 	
 	public void execute() {
+		
+		int currentPos = CursorTrack.getInstance().getCursor(client);
+		Log.i("CursorCommand execute()", "currentPos " + String.valueOf(currentPos));
+		if (movement<0 && currentPos+movement <= 0) {
+			
+			Log.i("CursorCommand execute()", "exceeds left bound");
+			CursorTrack.getInstance().moveCursor(client, -currentPos);
+			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		} else if (movement>0 && currentPos+movement > text.getText().toString().length()) {
+			Log.i("CursorCommand execute()", "exceeds right bound");
+			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
+			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+			
+		} else {
+			Log.i("CursorCommand execute()", "proper");
+			CursorTrack.getInstance().moveCursor(client, movement);
+			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+			
+		}
+		Log.i("CursorCommand", "move" + String.valueOf(movement));
+		
 		// TODO initialize submissionID
 		/*
 		 * send request
 		 */
+		Log.i("CursorCommand", "execute()");
 		CursorCommandBufObj.Builder builder = CursorCommandBufObj.newBuilder();
-		builder.setClientID(client);
+		builder.setClientID((int)client);
 		builder.setMovement(movement);
 		CursorCommandBufObj object = builder.build();
 
 		if (OnlineClient.getInstance().getClient().inSession() && 
 				OnlineClient.getInstance().getClient() != null) {
 			try {
+				
 				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "CursorCommand");
+				Log.i("CursorCommand getSubmissionID", "submissionID : " + String.valueOf(submissionID));
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		int currentPos = CursorTrack.getInstance().getCursor(client);
-		if (movement<0 && currentPos+movement <= 0) 
-			CursorTrack.getInstance().moveCursor(client, -currentPos);
-		else if (movement>0 && currentPos+movement >= text.getText().toString().length())  
-			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
-		else CursorTrack.getInstance().moveCursor(client, movement);
-		Log.i("CursorCommand", "move" + String.valueOf(movement));
+		
 	}
 	
 	public void unwind() {

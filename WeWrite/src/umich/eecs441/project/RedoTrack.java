@@ -15,10 +15,10 @@ public class RedoTrack {
 	private static RedoTrack instance = null;
 	
 	// mapping from the client instance to the vector contains the redolist
-	private HashMap<Integer, Vector<AbstractCommand> > redoMap = null;
+	private HashMap<Long, Vector<AbstractCommand> > redoMap = null;
 	
 	protected RedoTrack () {
-		redoMap = new HashMap<Integer, Vector<AbstractCommand> >();
+		redoMap = new HashMap<Long, Vector<AbstractCommand> >();
 	}
 	
 	public static RedoTrack getInstance () {
@@ -31,7 +31,7 @@ public class RedoTrack {
 	 * add a new client into the vector
 	 * @param client
 	 */
-	public void  addClient (int client) {
+	public void  addClient (Long client) {
 		redoMap.put(client, new Vector<AbstractCommand> () );
 	}
 	
@@ -40,7 +40,7 @@ public class RedoTrack {
 	 * @param client
 	 * @return
 	 */
-	public Vector<AbstractCommand> getRedoList (int client) {
+	public Vector<AbstractCommand> getRedoList (Long client) {
 		return redoMap.get(client);
 	}
 	
@@ -50,7 +50,7 @@ public class RedoTrack {
 	 * @param client
 	 * @return
 	 */
-	public boolean isEmpty (int client) {
+	public boolean isEmpty (Long client) {
 		return redoMap.get(client).isEmpty();
 	}
 	
@@ -58,7 +58,7 @@ public class RedoTrack {
 	 * clear the redolist of client. When there is a new action come
 	 * @param client
 	 */
-	public void clearRedoList (int client) {
+	public void clearRedoList (Long client) {
 		redoMap.get(client).clear();
 	}
 	

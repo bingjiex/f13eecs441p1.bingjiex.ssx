@@ -32,10 +32,10 @@ public interface AbstractCommand {
 	 * @return
 	 */
 	
-	public int getClient();
+	public long getClient();
 	
 	public int getSubmissionID ();
 	// add setSubmissionID to set flag to confirmed, -1
-	public void setSubmissionID ();
+	public void setSubmissionID (int subId);
 
 }

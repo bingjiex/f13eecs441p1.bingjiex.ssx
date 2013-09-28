@@ -2,6 +2,8 @@ package umich.eecs441.project;
 
 import java.util.*;
 
+import android.util.Log;
+
 /**
  * Singleton for all the clients cursor position
  * 
@@ -20,14 +22,14 @@ public class CursorTrack {
 	/**
 	 * the hashmap that keeps track the client cursor position pair
 	 */
-	private HashMap <Integer, Integer> cursorMap = null;
+	private HashMap <Long, Integer> cursorMap = null;
 	
 	
 	/**
 	 * constructor
 	 */
 	protected CursorTrack() {
-		cursorMap = new HashMap <Integer, Integer>();
+		cursorMap = new HashMap <Long, Integer>();
 	}
 	/**
 	 * still need a constructor with value
@@ -56,8 +58,8 @@ public class CursorTrack {
 	 * @param client
 	 * @return 
 	 */
-	public void moveRight(Integer client, Integer length){
-		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
+	public void moveRight(Long client, Integer length){
+		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
 			 if (entry.getValue() > cursorMap.get(client)) {
 				 cursorMap.put(entry.getKey(), entry.getValue() + length);
 			 }
@@ -71,8 +73,8 @@ public class CursorTrack {
 	 * @return 
 	 */
 	// canbe used in insert and remove
-	public void moveLeft(Integer client, Integer length){
-		for (Map.Entry<Integer, Integer> entry : cursorMap.entrySet()) {
+	public void moveLeft(Long client, Integer length){
+		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
 			 if (entry.getValue() >= cursorMap.get(client)) {
 				 cursorMap.put(entry.getKey(), entry.getValue() - length);
 			 }
@@ -87,7 +89,7 @@ public class CursorTrack {
 	 * @param client
 	 * @param movement
 	 */
-	public void moveCursor(Integer client, Integer movement) {
+	public void moveCursor(Long client, Integer movement) {
 		cursorMap.put(client, cursorMap.get(client) + movement);
 	}
 	
@@ -96,7 +98,9 @@ public class CursorTrack {
 	 * @param client
 	 * @return
 	 */
-	public int getCursor (Integer client) {
+	public int getCursor (Long client) {
+		Log.i("CursorTrack getCursor", String.valueOf(client));
+		
 		return cursorMap.get(client);
 	}
 	
@@ -105,7 +109,7 @@ public class CursorTrack {
 	 * add a new client
 	 * @param client
 	 */
-	public void addClient (int client) {
+	public void addClient (Long client) {
 		cursorMap.put(client, 0);
 	}
 	
@@ -113,7 +117,7 @@ public class CursorTrack {
 	 * get CursorMap
 	 * 
 	 */
-	public HashMap<Integer, Integer> getCursorMap() {
+	public HashMap<Long, Integer> getCursorMap() {
 		return cursorMap;
 	}
 	

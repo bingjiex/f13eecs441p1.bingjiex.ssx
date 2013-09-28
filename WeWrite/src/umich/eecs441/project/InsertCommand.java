@@ -24,7 +24,7 @@ public class InsertCommand implements AbstractCommand{
 	// current use an int since there is no interaction, default is 0
 	private int submissionID;
 	
-	private int client;
+	private long client;
 	
 	/**
 	 * the char that is inserted
@@ -43,7 +43,7 @@ public class InsertCommand implements AbstractCommand{
 	 * get the client of the operation
 	 * @return client, int
 	 */
-	public int getClient(){
+	public long getClient(){
 		return client;
 	}
 	
@@ -51,37 +51,37 @@ public class InsertCommand implements AbstractCommand{
 		return submissionID;
 	}
 	
-	public void setSubmissionID() {
-		submissionID = -1;
+	public void setSubmissionID(int subId) {
+		submissionID = subId;
 	}
 	/**
 	 * constructor
 	 * @param myChar
 	 * @param currentText
 	 */
-	public InsertCommand (String myChar, int c, CursorWatcher currentText) {
+	public InsertCommand (String myChar, int c) {
 		newChar = myChar;
 		client = c;
-		text = currentText;
+		text = TextEditorActivity.getCursorWatcher();
 	}
 	
 	
 	
 	// for local user construct command
-	public InsertCommand(String myChar, CursorWatcher currentText){
+	public InsertCommand(String myChar){
 		
 		// current is int type, expected to use client type
 		client = (int)OnlineClient.getInstance().getClientID();
 		
 		newChar = myChar;
-		text = currentText;
+		text = TextEditorActivity.getCursorWatcher();
 				
 		Log.i("InsertCommand", "Constructor");
 	}
 	
 	public void execute(){
 		InsertCommandBufObj.Builder builder = InsertCommandBufObj.newBuilder();
-		builder.setClientID(client);
+		builder.setClientID((int)client);
 		builder.setNewChar(newChar);
 		
 		InsertCommandBufObj object = builder.build();

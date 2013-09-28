@@ -40,7 +40,7 @@ public class CursorWatcher extends EditText {
 	 @Override   
      protected void onSelectionChanged(int selStart, int selEnd) { 
 		if (selStart != selEnd) {
-			int clientID = (int)OnlineClient.getInstance().getClientID();
+			long clientID = OnlineClient.getInstance().getClientID();
 			int cursorPos = CursorTrack.getInstance().getCursor(clientID);
 			
 			this.setSelection(cursorPos);

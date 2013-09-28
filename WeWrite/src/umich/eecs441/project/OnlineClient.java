@@ -7,6 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import umich.eecs441.project.proto.CursorCommandBuf.CursorCommandBufObj;
+import umich.eecs441.project.proto.InsertCommandBuf.InsertCommandBufObj;
+import umich.eecs441.project.proto.RedoCommandBuf.RedoCommandBufObj;
+import umich.eecs441.project.proto.RemoveCommandBuf.RemoveCommandBufObj;
+import umich.eecs441.project.proto.UndoCommandBuf.UndoCommandBufObj;
+
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -53,9 +61,9 @@ public class OnlineClient {
 	
 	
 	// the basefile for close.
-	ByteArrayInputStream baseFileBuffer; 
+	private ByteArrayInputStream baseFileBuffer; 
 	
-	ByteArrayOutputStream baseFileReceiveBuffer;
+	private ByteArrayOutputStream baseFileReceiveBuffer;
 
 	public void setEditorActivity(EventAccessible editorActivity) {
 		this.editorActivity = editorActivity;
@@ -80,7 +88,64 @@ public class OnlineClient {
 					String eventType, final byte[] data) {
 
 				Log.d("client connection", "RECEIVED SUB ID:" + subId);
-				editorActivity.eventReceived(eventType, data);
+				AbstractCommand cmd = null;
+				if (eventType.equals("CursorCommand")) {
+					try {
+						CursorCommandBufObj cursorCommandBufObj = CursorCommandBufObj.parseFrom(data);
+						CursorCommandBufObj.Builder builder = cursorCommandBufObj.toBuilder();
+						CursorCommandBufObj object = builder.build();
+						cmd = new CursorCommand (object.getMovement(), object.getClientID());
+					} catch (InvalidProtocolBufferException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				} else if (eventType.equals("InsertCommand")) {
+					try {
+						InsertCommandBufObj insertCommandBufObj = InsertCommandBufObj.parseFrom(data);
+						InsertCommandBufObj.Builder builder = insertCommandBufObj.toBuilder();
+						InsertCommandBufObj object = builder.build();
+						cmd = new InsertCommand (object.getNewChar(), object.getClientID());
+					} catch (InvalidProtocolBufferException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				} else if (eventType.equals("RemoveCommand")) {
+					try {
+						RemoveCommandBufObj removeCommandBufObj = RemoveCommandBufObj.parseFrom(data);
+						RemoveCommandBufObj.Builder builder = removeCommandBufObj.toBuilder();
+						RemoveCommandBufObj object = builder.build();
+						cmd = new RemoveCommand (object.getRemovedChar(), object.getClientID());
+					} catch (InvalidProtocolBufferException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (eventType.equals("UndoCommand")) {
+					try {
+						UndoCommandBufObj undoCommandBufObj = UndoCommandBufObj.parseFrom(data);
+						UndoCommandBufObj.Builder builder = undoCommandBufObj.toBuilder();
+						UndoCommandBufObj object = builder.build();
+						cmd = new UndoCommand (object.getClientID());
+					} catch (InvalidProtocolBufferException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						RedoCommandBufObj redoCommandBufObj = RedoCommandBufObj.parseFrom(data);
+						RedoCommandBufObj.Builder builder = redoCommandBufObj.toBuilder();
+						RedoCommandBufObj object = builder.build();
+						cmd = new RedoCommand (object.getClientID());
+					} catch (InvalidProtocolBufferException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				cmd.setSubmissionID(subId);
+
+				editorActivity.eventReceived(cmd);
 			}
 
 			@Override
@@ -103,7 +168,11 @@ public class OnlineClient {
 			public void onSessionCreated(long id) {
 				Log.i("client connection", "Session created, id: " + id);
 				sessionId = id;
-				
+				Log.i("client connection onSessionCreated", String.valueOf(client.currentSessionParticipantId()));
+				if (MainActivity.getBaseFileStr().equals("") || MainActivity.getBaseFileStr() == null) {
+					Log.i("client connection onSessionCreated", "no base file dismiss waiting dialog");
+					editorActivity.dismissWaitingDialog();
+				}
 			}
 
 			@Override
@@ -149,8 +218,8 @@ public class OnlineClient {
 		    @Override
 		    public byte[] onBaseFileChunkRequested(long currentBaseFileSize) {
 		        
-		    	ByteArrayInputStream baseFileBuffer = 
-		    			new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
+		    	Log.i("client connection onBaseFileChunkRequested", "currentBaseFileSize" + String.valueOf(currentBaseFileSize));
+		    	
 		    	// read up to max chunk size at a time
 		    	byte[] temp = new byte[CollabrifyClient.MAX_BASE_FILE_CHUNK_SIZE];
 		    	int read = 0;
@@ -174,12 +243,15 @@ public class OnlineClient {
 	      	 
 
 	      	public void onBaseFileUploadComplete(long baseFileSize)	{
+	      		
+	      		Log.i("client connection onBaseFileUploadComplete", "baseFileSize"+ String.valueOf(baseFileSize));
 		        try {
 		        	baseFileBuffer.close();
 		        } catch( IOException e ) {
 		          // TODO Auto-generated catch block
 		        	e.printStackTrace();
 		        }
+		        editorActivity.dismissWaitingDialog();
 		     }
 		};
 	
@@ -226,6 +298,7 @@ public class OnlineClient {
 
 	public void setCommandStackContains(int commandStackContains) {
 		this.commandStackContains = commandStackContains;
+		Log.i("OnlineClient setCommandStackContains", String.valueOf(this.commandStackContains));
 	}
 
 	public int getRedoListContains() {
@@ -234,7 +307,13 @@ public class OnlineClient {
 
 	public void setRedoListContains(int redoListContains) {
 		this.redoListContains = redoListContains;
+		Log.i("OnlineClient setRedoListContains", String.valueOf(this.redoListContains));
 	}
 	
+	
+	public void iniInputBuffer (String baseFile) {
+		Log.i("client connection iniInputBuffer", "initialize " + baseFile);
+		baseFileBuffer = new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
+	}
 
 }

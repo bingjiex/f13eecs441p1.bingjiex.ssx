@@ -8,7 +8,7 @@ public class UndoCommand implements AbstractCommand{
 	
 	//TODO protocol buffer needs client 
 	
-	int client;
+	long client;
 	
 	public UndoCommand (int c) {
 		client = c;
@@ -21,7 +21,7 @@ public class UndoCommand implements AbstractCommand{
 	
 	public void execute() {
 		UndoCommandBufObj.Builder builder = UndoCommandBufObj.newBuilder();
-		builder.setClientID(client);
+		builder.setClientID((int)client);
 		
 		UndoCommandBufObj object = builder.build();
 		
@@ -46,7 +46,7 @@ public class UndoCommand implements AbstractCommand{
 	public void rewind() {}
 
 	@Override
-	public int getClient() {
+	public long getClient() {
 		return client;
 	}
 
@@ -57,7 +57,7 @@ public class UndoCommand implements AbstractCommand{
 		return 0;
 	}
 	
-	public void setSubmissionID () {
+	public void setSubmissionID (int subId) {
 		return;
 	}
 	

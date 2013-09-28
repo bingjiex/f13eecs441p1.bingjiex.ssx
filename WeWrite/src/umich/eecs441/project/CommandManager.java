@@ -48,25 +48,33 @@ public class CommandManager {
 	
 	// receive a command
 	public void receiveCommand (AbstractCommand cmd) {
+		
+		Log.i("CommandManager receiveCommand", "cmd: " + cmd.toString());
 		// !! if there is no user in the map
 		// add in cursor map and redo map
-		CursorTrack.getInstance().addClient(cmd.getClient());
-		RedoTrack.getInstance().addClient(cmd.getClient());
+		if (!CursorTrack.getInstance().getCursorMap().containsKey(cmd.getClient())) {
+			Log.i("CommandManager receiveCommand", "client doesnot exist");
+			CursorTrack.getInstance().addClient(cmd.getClient());
+			RedoTrack.getInstance().addClient(cmd.getClient());
+		}
 		if (cmd instanceof UndoCommand) {
 			undo(cmd);
 		} else if (cmd instanceof RedoCommand) {
 			redo(cmd);
 		} else {
+			Log.i("CommandManager receiveCommand", "Command ID " + String.valueOf(cmd.getSubmissionID()));
 			if (cmd.getSubmissionID() == -1) {
+				Log.i("CommandManager receiveCommand", "other's command");
 				// go into stack
 				commandStack.add(cmd);
 				cmd.rewind(); 
 			} else {
-				
+				Log.i("CommandManager receiveCommand", "owned command");
 				Vector<AbstractCommand> temp = new Vector<AbstractCommand> ();
 				
 				for (int i = commandStack.size() - 1; i >= 0; i--) {
 					if (commandStack.elementAt(i).getSubmissionID() == cmd.getSubmissionID()) {
+						Log.i("CommandManager receiveCommand", "find the command with the same ID");
 						commandStack.elementAt(i).unwind();
 						commandStack.remove(i); 
 						break;
@@ -84,7 +92,8 @@ public class CommandManager {
 				cmd.rewind();
 				// set submissionID -1
 				// add to commandStack
-				cmd.setSubmissionID();
+				cmd.setSubmissionID(-1);
+				Log.i("CommandManager receiveCommand", "setSubmissionID " + String.valueOf(cmd.getSubmissionID()));
 				commandStack.add(cmd);
 				
 			}
@@ -101,8 +110,14 @@ public class CommandManager {
 	
 	public void undo(AbstractCommand cmd) {
 		
+		
+		Log.i("CommandManager undo", "command client: " + String.valueOf(cmd.getClient()));
+		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
-			Log.i("command in Stack before undo", "name " + commandStack.elementAt(i).getClass().toString());
+			Log.i("command in Stack before undo", "name " + commandStack.elementAt(i).getClass().toString() + "\n" + 
+												  "clientID: " + String.valueOf(commandStack.elementAt(i).getClient()) + "\n" + 
+					 							  "submissionID: " + String.valueOf(commandStack.elementAt(i).getSubmissionID()));
+		
 		}
 		
 		for (int i = RedoTrack.getInstance().getRedoList(cmd.getClient()).size() - 1; i >= 0; i--) {
@@ -120,15 +135,24 @@ public class CommandManager {
 			// current command
 			AbstractCommand tempCommand = commandStack.elementAt(i);
 			
+			Log.i("traverse command for undo", "name " + commandStack.elementAt(i).getClass().toString() + "\n" + 
+					  "clientID: " + String.valueOf(commandStack.elementAt(i).getClient()) + "\n" + 
+					  "submissionID: " + String.valueOf(commandStack.elementAt(i).getSubmissionID()));
+
+			
+			
 			// unwind current command
 			tempCommand.unwind();
 			
 			// delete command
 			commandStack.remove(i);
 			
+
+			
 			// when it is the client operation and the operation is not undo
 			// !!! and the command is confirmed
-			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand) && cmd.getSubmissionID() == -1) {
+			if (tempCommand.getClient() == cmd.getClient() && !(tempCommand instanceof UndoCommand) && tempCommand.getSubmissionID() == -1) {
+				Log.i("CommandManager undo find command", "go into the condition scope");
 				// the one that should be undone
 				// put into the redoList
 				RedoTrack.getInstance().getRedoList(cmd.getClient()).add(tempCommand);
@@ -253,7 +277,7 @@ public class CommandManager {
 	 * remove all the undo tag in the stack
 	 * @param client
 	 */
-	public void newCommandHandling(int client) {
+	public void newCommandHandling(long client) {
 		if(!RedoTrack.getInstance().isEmpty(client)) {
 			Log.i("redoList size before newCommandHandling", String.valueOf(RedoTrack.getInstance().getRedoList(client).size()));
 			for (int i = commandStack.size() - 1; i >= 0; i--) {

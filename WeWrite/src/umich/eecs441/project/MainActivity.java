@@ -58,8 +58,6 @@ public class MainActivity extends Activity
 		
 		OnlineClient.getInstance(this.getApplicationContext(), this);
 		
-		
-		
 		joinSession.setOnClickListener(new Button.OnClickListener () {
 			@Override
 			public void onClick(View arg0) {

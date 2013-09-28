@@ -7,7 +7,7 @@ public class RedoCommand implements AbstractCommand{
 	
 	// TODO protocol buffer needs client
 	
-	int client;
+	long client;
 	
 	public RedoCommand (int c) {
 		client = c;
@@ -21,7 +21,7 @@ public class RedoCommand implements AbstractCommand{
 	
 	public void execute() {
 		RedoCommandBufObj.Builder builder = RedoCommandBufObj.newBuilder();
-		builder.setClientID(client);
+		builder.setClientID((int)client);
 		
 		RedoCommandBufObj object = builder.build();
 		
@@ -49,7 +49,7 @@ public class RedoCommand implements AbstractCommand{
 	public void rewind() {}
 
 	@Override
-	public int getClient() {
+	public long getClient() {
 		return client;
 	}
 	
@@ -61,7 +61,7 @@ public class RedoCommand implements AbstractCommand{
 	}
 	
 	// never use
-	public void setSubmissionID () {
+	public void setSubmissionID (int subId) {
 		return;
 	}
 	
