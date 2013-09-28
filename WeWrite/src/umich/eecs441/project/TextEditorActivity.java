@@ -505,8 +505,10 @@ public class TextEditorActivity extends Activity
 		TextEditorActivity.this.runOnUiThread(new Runnable () {
 			@Override
 			public void run() {
+				editText.removeTextChangedListener(editText.getTextWatcher());
 				// TODO Auto-generated method stub
 				editText.setText(text);
+				editText.addTextChangedListener(editText.getTextWatcher());
 			}
 		});
 		waitingDialog.dismiss();

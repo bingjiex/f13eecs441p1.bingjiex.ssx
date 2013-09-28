@@ -151,6 +151,8 @@ public class OnlineClient {
 			@Override
 			public void onReceiveSessionList(final List<CollabrifySession> sessionList) {
 	        
+			
+				
 				Log.i("onReceiveSessionList", "entered!");
 				if( sessionList.isEmpty() ) {
 					Log.i("onReceiveSessionList", "No session available");
@@ -316,4 +318,8 @@ public class OnlineClient {
 		baseFileBuffer = new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
 	}
 
+	public static void setNull () {
+		instance = null;
+	}
+	
 }

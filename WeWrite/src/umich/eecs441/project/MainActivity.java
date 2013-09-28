@@ -30,7 +30,6 @@ public class MainActivity extends Activity
 	static private String sessionName;
 	static private int userUpperLimit;
 	static private long sessionId;
-	static private boolean noPassword = false;
 	
 	static public boolean createNewSession = false;
 	
@@ -56,22 +55,25 @@ public class MainActivity extends Activity
 		createSession = (Button)this.findViewById(R.id.button1);
 		joinSession = (Button)this.findViewById(R.id.button2);
 		
+		OnlineClient.setNull();
 		OnlineClient.getInstance(this.getApplicationContext(), this);
 		
-		joinSession.setOnClickListener(new Button.OnClickListener () {
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				try {
-					Log.i("@@", "@@");
-					temp.add("sample");
-					OnlineClient.getInstance().getClient().requestSessionList(temp);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-				}
-				Log.i("joinsession ON click", "show progressDialog");
-				waitingDialog = ProgressDialog.show(MainActivity.this, "Waiting...", "Obtaining Sessions", true);
-				
+			joinSession.setOnClickListener(new Button.OnClickListener () {
+				@Override
+				public void onClick(View arg0) {
+					Log.i("joinsession ON click", "show progressDialog");
+					waitingDialog = ProgressDialog.show(MainActivity.this, "Waiting...", "Obtaining Sessions", true);
+					Log.i("joinSession setOnClickListener", String.valueOf(waitingDialog == null));
+	
+					
+					// TODO Auto-generated method stub
+					try {
+						Log.i("@@", "@@");
+						temp.add("sample");
+						OnlineClient.getInstance().getClient().requestSessionList(temp);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+					}
 				/*new Thread () {
 					public void run () {
 						Log.i("find list thread", "run");
@@ -229,8 +231,11 @@ public class MainActivity extends Activity
 	public void setSessionList(List<CollabrifySession> list) {
 		// TODO Auto-generated method stub
 		sessionList = new ArrayList<CollabrifySession>(list);
-		Log.i("find list thread", "list");
+		Log.i("find list thread", String.valueOf(list.size()));
+		Log.i("setSessionList waitingDialog", String.valueOf(waitingDialog == null));
+		
 		waitingDialog.dismiss();
+		
 		final AlertDialog.Builder builder = new AlertDialog.Builder(
 				MainActivity.this);
 
@@ -260,6 +265,7 @@ public class MainActivity extends Activity
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				
 				builder.show();
 			}
 		});
@@ -299,5 +305,7 @@ public class MainActivity extends Activity
 	public static String getBaseFileStr() {
 		return baseFileStr;
 	}
+	
+	
 
 }
