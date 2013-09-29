@@ -502,6 +502,7 @@ public class TextEditorActivity extends Activity
 	}
 	
 	public void setEditorText (final String text) {
+		Log.i("setEditorText", "entered!");
 		TextEditorActivity.this.runOnUiThread(new Runnable () {
 			@Override
 			public void run() {
@@ -511,7 +512,7 @@ public class TextEditorActivity extends Activity
 				editText.addTextChangedListener(editText.getTextWatcher());
 			}
 		});
-		waitingDialog.dismiss();
+		dismissWaitingDialog();
 	}
 	
 	
@@ -529,7 +530,7 @@ public class TextEditorActivity extends Activity
 				try {
 					CommandManager.getInstance().receiveCommand(cmd);
 					// if it is not redo and undo
-					if (cmd instanceof UndoCommand && cmd instanceof RedoCommand) {
+					if (!(cmd instanceof UndoCommand) && !(cmd instanceof RedoCommand)) {
 						CommandManager.getInstance().newCommandHandling(cmd.getClient());
 					}
 						

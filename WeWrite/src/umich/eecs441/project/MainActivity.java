@@ -55,8 +55,9 @@ public class MainActivity extends Activity
 		createSession = (Button)this.findViewById(R.id.button1);
 		joinSession = (Button)this.findViewById(R.id.button2);
 		
-		OnlineClient.setNull();
-		OnlineClient.getInstance(this.getApplicationContext(), this);
+		OnlineClient.getInstance(this.getApplicationContext());
+		
+		OnlineClient.getInstance().setMainActivity(MainActivity.this);
 		
 			joinSession.setOnClickListener(new Button.OnClickListener () {
 				@Override

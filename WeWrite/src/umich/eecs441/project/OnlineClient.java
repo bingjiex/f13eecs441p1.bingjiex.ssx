@@ -68,14 +68,17 @@ public class OnlineClient {
 	public void setEditorActivity(EventAccessible editorActivity) {
 		this.editorActivity = editorActivity;
 	}
+	
+	public void setMainActivity(SessionListAccessible mainActivity) {
+		this.mainActivity = mainActivity;
+	}
 
 
 	// TODO expected to add constructor with client type argument
-	protected OnlineClient(Context context, SessionListAccessible main) {
+	protected OnlineClient(Context context) {
 
 		commandStackContains = 0;
 		
-		mainActivity = main;
 
 		collabrifyListener = new CollabrifyAdapter() {
 			@Override
@@ -185,10 +188,14 @@ public class OnlineClient {
 			@Override
 			public void onSessionJoined(long maxOrderId, long baseFileSize) {
 				Log.i("client connection", "Session Joined");
+				Log.i("client connection onSessionJoined", "maxOrderId: " + String.valueOf(maxOrderId));
+				Log.i("client connection onSessionJoined", "baseFileSize: " + String.valueOf(baseFileSize));
 				if (baseFileSize > 0) { // initialize buffer to receive base
 										// file
 					baseFileReceiveBuffer = new ByteArrayOutputStream(
 							(int) baseFileSize);
+				} else {
+					editorActivity.dismissWaitingDialog();
 				}
 				Log.i("onSessionJoined", "success");
 			}
@@ -196,7 +203,6 @@ public class OnlineClient {
 	      	public void onBaseFileChunkReceived(byte[] baseFileChunk) {
 	      		try {
 	      			if( baseFileChunk != null ) {
-	      				
 	      				baseFileReceiveBuffer.write(baseFileChunk);
 	      			} else {
 	      				editorActivity.setEditorText(baseFileReceiveBuffer.toString());
@@ -271,9 +277,9 @@ public class OnlineClient {
 	}
 
 	
-	public static OnlineClient getInstance(Context context, SessionListAccessible main) {
+	public static OnlineClient getInstance(Context context) {
 		if (instance == null)
-			instance = new OnlineClient(context, main);
+			instance = new OnlineClient(context);
 		return instance;
 	}
 
@@ -318,8 +324,5 @@ public class OnlineClient {
 		baseFileBuffer = new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
 	}
 
-	public static void setNull () {
-		instance = null;
-	}
 	
 }

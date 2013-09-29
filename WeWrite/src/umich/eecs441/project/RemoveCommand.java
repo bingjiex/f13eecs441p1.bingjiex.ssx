@@ -94,12 +94,14 @@ public class RemoveCommand implements AbstractCommand{
 	public void execute(){
 		RemoveCommandBufObj.Builder builder = RemoveCommandBufObj.newBuilder();
 		builder.setClientID((int)client);
+		Log.i("RemoveCommand Before Broadcast", "Set removedchar = " + removedChar);
 		builder.setRemovedChar(removedChar);
 		RemoveCommandBufObj object = builder.build();
 		
 		if (OnlineClient.getInstance().getClient().inSession() && 
 				OnlineClient.getInstance().getClient() != null) {
 			try {
+				Log.i("RemoveCommand Broadcast", "Removedchar: " + removedChar);
 				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "RemoveCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();
@@ -156,9 +158,13 @@ public class RemoveCommand implements AbstractCommand{
 	
 	public void rewind(){
 		
+		Log.i("RemoveCommand rewind", "removedChar: " + removedChar);
+		
 		text.removeTextChangedListener(text.getTextWatcher());
-		Log.i("RemoveCommand", "Rewind");
+		Log.i("RemoveCommand Rewind", "CursorPosition: " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		String temp = text.getText().toString();
+		
+		Log.i("RemoveCommand before rewind", "rewind text: " + text);
 		
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		
@@ -167,6 +173,9 @@ public class RemoveCommand implements AbstractCommand{
 		int actualRemoveLength = actualRemoveLength(removedChar, subStrBeforeCursor);
 		
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
+		
+		Log.i("RemoveCommand after rewind", "rewind text: " + text);
+		
 		text.setText(temp);
 		
 		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {

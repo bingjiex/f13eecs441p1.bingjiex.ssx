@@ -133,7 +133,7 @@ public class InsertCommand implements AbstractCommand{
 	public void rewind(){
 		
 		text.removeTextChangedListener(text.getTextWatcher());
-		Log.i("InsertCommand", "Rewind");
+		Log.i("InsertCommand Rewind", "CursorPosition: " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		String temp = text.getText().toString();
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		temp = temp.substring(0, cursorPosition) + newChar + temp.substring(cursorPosition);

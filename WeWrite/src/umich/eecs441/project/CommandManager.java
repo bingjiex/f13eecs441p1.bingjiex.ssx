@@ -49,6 +49,12 @@ public class CommandManager {
 	// receive a command
 	public void receiveCommand (AbstractCommand cmd) {
 		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("CommandManager receiveCommand stack", "Command name: " + commandStack.elementAt(i).toString() + "\n" + 
+														 "Command owner: " + commandStack.elementAt(i).getClient() + "\n" + 
+					 									 "Command submissionID: " + commandStack.elementAt(i).getSubmissionID());			
+		}
+		
 		Log.i("CommandManager receiveCommand", "cmd: " + cmd.toString());
 		// !! if there is no user in the map
 		// add in cursor map and redo map
@@ -89,6 +95,8 @@ public class CommandManager {
 					temp.elementAt(i).rewind();
 					commandStack.add(temp.elementAt(i));
 				}
+				
+				
 				cmd.rewind();
 				// set submissionID -1
 				// add to commandStack
