@@ -164,17 +164,21 @@ public class RemoveCommand implements AbstractCommand{
 		Log.i("RemoveCommand Rewind", "CursorPosition: " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		String temp = text.getText().toString();
 		
-		Log.i("RemoveCommand before rewind", "rewind text: " + text);
+		Log.i("RemoveCommand before rewind", "rewind text: " + text.getText());
 		
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
+		
+		Log.i("RemoveCommand rewind", "cursorPosition: " + String.valueOf(cursorPosition));
 		
 		String subStrBeforeCursor = temp.substring(0, cursorPosition);
 		
 		int actualRemoveLength = actualRemoveLength(removedChar, subStrBeforeCursor);
 		
+		Log.i("RemoveCommand rewind", "actualRemoveLength: " + String.valueOf(actualRemoveLength));
+		
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
 		
-		Log.i("RemoveCommand after rewind", "rewind text: " + text);
+		Log.i("RemoveCommand after rewind", "rewind text: " + temp);
 		
 		text.setText(temp);
 		
@@ -198,14 +202,20 @@ public class RemoveCommand implements AbstractCommand{
 			return 0;
 		}
 		
-		int leng1 = str1.length();
+		int i = str1.length() - 1;
+		int j = str2.length() - 1;
 		
 		int result = 0;
 		
-		for (int i=leng1-1; i>=0; i-- ) {
-			if (str1.charAt(i) == str2.charAt(i)) {
-				result++;
+		while (i >= 0 && j >= 0) {
+			if (str1.charAt(i) == str2.charAt(j)) {
+				result ++;
+				i --;
+				j --;
+			} else {
+				break;
 			}
+
 		}
 		return result;
 	}

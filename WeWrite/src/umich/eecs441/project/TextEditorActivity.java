@@ -357,6 +357,7 @@ public class TextEditorActivity extends Activity
 						 }
 					}
 					CursorTrack.getInstance().moveLeft(OnlineClient.getInstance().getClientID(), 1);
+					Log.i("TextEditor onTextChange beforeTextChanged", change);
 					changeCommand("Delete", change);
 					startTime = System.currentTimeMillis();	
 //					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
@@ -423,7 +424,10 @@ public class TextEditorActivity extends Activity
 	 */
 	private synchronized void timeUp() {
 		if (buffer != "") {
+			
+			Log.i("TextEditorActivity timeUp", "entered!");
 			if (lastCommand.equals("Insert")) {
+				Log.i("TextEditorActivity timeUp lastCommand is insert", buffer);
 				AbstractCommand cmd = new InsertCommand(buffer);
 				// notice that the execute should be ahead of the storecommand to set the command id.
 				cmd.execute();
@@ -435,11 +439,14 @@ public class TextEditorActivity extends Activity
 				CommandManager.getInstance().newCommandHandling((int)OnlineClient.getInstance().getClientID());
 
 			} else {
+				Log.i("TextEditorActivity timeUp lastCommand is remove", buffer);
 				// reverse the buffer string
-				String temp = "";
+				/*String temp ="";
 				for (int i = temp.length() - 1; i >= 0; i++) {
-					temp += buffer.charAt(i);
-				}
+					temp.concat(buffer.substring(i, i+1));
+				}*/
+				String temp = new StringBuilder(buffer).reverse().toString();
+				Log.i("TextEditorActivity timeUp", "temp: " + temp);
 				AbstractCommand cmd = new RemoveCommand(temp, recoverMap);
 				recoverMap.clear();
 				cmd.execute();
