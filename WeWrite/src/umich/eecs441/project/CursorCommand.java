@@ -67,7 +67,7 @@ public class CursorCommand implements AbstractCommand {
 		
 		int currentPos = CursorTrack.getInstance().getCursor(client);
 		Log.i("CursorCommand execute()", "currentPos " + String.valueOf(currentPos));
-		if (movement<0 && currentPos+movement <= 0) {
+		if (movement<0 && currentPos+movement < 0) {
 			
 			Log.i("CursorCommand execute()", "exceeds left bound");
 			CursorTrack.getInstance().moveCursor(client, -currentPos);
@@ -112,9 +112,24 @@ public class CursorCommand implements AbstractCommand {
 	public void unwind() {
 		Log.i("CursorCommand", "unwind");
 		
+		int currentPos = CursorTrack.getInstance().getCursor(client);
+		
 		Log.i("Cursor moving", "from " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		
-		CursorTrack.getInstance().moveCursor(client, -movement);
+		if (movement<0 && currentPos-movement > text.getText().toString().length()) {
+			Log.i("CursorCommand unwind()", "exceeds right bound");
+			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
+			Log.i("CursorCommand unwind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		} else if (movement>0 && currentPos+movement < 0) {
+			Log.i("CursorCommand unwind()", "exceeds left bound");
+			CursorTrack.getInstance().moveCursor(client,-currentPos);
+			Log.i("CursorCommand unwind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		} else {
+			Log.i("CursorCommand execute()", "proper");
+			CursorTrack.getInstance().moveCursor(client, -movement);
+			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+			
+		}
 		
 		Log.i("Cursor moving", "to " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		
@@ -122,7 +137,24 @@ public class CursorCommand implements AbstractCommand {
 	
 	public void rewind() {
 		Log.i("CursorCommand", "rewind");
-		CursorTrack.getInstance().moveCursor(client, movement);
+		
+		int currentPos = CursorTrack.getInstance().getCursor(client);
+		
+		if (movement<0 && currentPos+movement < 0) {
+			
+			Log.i("CursorCommand rewind()", "exceeds left bound");
+			CursorTrack.getInstance().moveCursor(client, -currentPos);
+			Log.i("CursorCommand rewind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		} else if (movement>0 && currentPos+movement > text.getText().toString().length()) {
+			Log.i("CursorCommand rewind()", "exceeds right bound");
+			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
+			Log.i("CursorCommand rewind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+		} else {
+			Log.i("CursorCommand execute()", "proper");
+			CursorTrack.getInstance().moveCursor(client, movement);
+			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+			
+		}
 	}
 	
 	

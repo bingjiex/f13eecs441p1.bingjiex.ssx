@@ -34,6 +34,11 @@ public class RemoveCommand implements AbstractCommand{
 	 */
 	private String removedChar;
 	
+	
+	// add actual delete string 
+	private String actualRemovedChar;
+	
+	
 	// submissionID just for distinguish between confirmed event and unconfirmed event
 	private int submissionID;
 	
@@ -92,6 +97,9 @@ public class RemoveCommand implements AbstractCommand{
 	
 	
 	public void execute(){
+		
+		actualRemovedChar = removedChar;
+		
 		RemoveCommandBufObj.Builder builder = RemoveCommandBufObj.newBuilder();
 		builder.setClientID((int)client);
 		Log.i("RemoveCommand Before Broadcast", "Set removedchar = " + removedChar);
@@ -140,7 +148,7 @@ public class RemoveCommand implements AbstractCommand{
 		// it should be able to change the text on the edit text
 		String temp = text.getText().toString();
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
-		temp = temp.substring(0, cursorPosition) + removedChar + temp.substring(cursorPosition);
+		temp = temp.substring(0, cursorPosition) + actualRemovedChar + temp.substring(cursorPosition);
 		text.setText(temp);
 		
 		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
@@ -148,7 +156,7 @@ public class RemoveCommand implements AbstractCommand{
 				CursorTrack.getInstance().getCursorMap().put(entry.getKey(), trackMap.get(entry.getKey()));
 			}
 		}
-		CursorTrack.getInstance().moveRight(client,	removedChar.length());
+		CursorTrack.getInstance().moveRight(client,	actualRemovedChar.length());
 		
 		trackMap.clear();
 		
@@ -172,11 +180,16 @@ public class RemoveCommand implements AbstractCommand{
 		
 		String subStrBeforeCursor = temp.substring(0, cursorPosition);
 		
-		int actualRemoveLength = actualRemoveLength(removedChar, subStrBeforeCursor);
+		int actualRemoveLength = actualRemoveLengthFunc(removedChar, subStrBeforeCursor);
 		
 		Log.i("RemoveCommand rewind", "actualRemoveLength: " + String.valueOf(actualRemoveLength));
 		
+		actualRemovedChar = temp.substring(cursorPosition - actualRemoveLength, cursorPosition);
+		
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
+		
+		
+		
 		
 		Log.i("RemoveCommand after rewind", "rewind text: " + temp);
 		
@@ -184,8 +197,7 @@ public class RemoveCommand implements AbstractCommand{
 		
 		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (isBetween(entry, actualRemoveLength)) {
-				Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - removedChar.length();
-				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
+				trackMap.put(entry.getKey(), entry.getValue());
 			}
 		}
 		
@@ -197,7 +209,7 @@ public class RemoveCommand implements AbstractCommand{
 	 * str1: the removed string
 	 * str2: the text bafore the cursor in edittext
 	 */
-	private int actualRemoveLength(String str1, String str2) {
+	private int actualRemoveLengthFunc(String str1, String str2) {
 		if (str1.isEmpty() || str2.isEmpty()) {
 			return 0;
 		}
@@ -223,7 +235,7 @@ public class RemoveCommand implements AbstractCommand{
 	private boolean isBetween (Map.Entry<Long, Integer> entry, int actualLength) {
 		Integer senderCursorPosBefore = CursorTrack.getInstance().getCursor(client);
 		Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - actualLength;
-		if (entry.getValue() < senderCursorPosBefore && entry.getValue() > senderCursorPosAfter) return true;
+		if (entry.getValue() <= senderCursorPosBefore && entry.getValue() > senderCursorPosAfter) return true;
 		else return false;
 	}
 

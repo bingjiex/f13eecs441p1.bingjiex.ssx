@@ -37,6 +37,8 @@ public class TextEditorActivity extends Activity
 	// waitingDialog
 	private ProgressDialog waitingDialog;
 		
+	
+	private boolean guard;
 
 	private Button undoButton;
 	private Button redoButton;
@@ -86,7 +88,7 @@ public class TextEditorActivity extends Activity
 			if (MainActivity.getBaseFileStr().equals("") || MainActivity.getBaseFileStr() == null) {
 				// TODO: getUserUpperLimit
 				List<String> temp = new ArrayList<String>();
-				temp.add("sample");
+				temp.add("pass");
 				try {
 					Log.i("createSession", "no base file");
 					OnlineClient.getInstance().getClient().createSession(MainActivity.getSessionName(), temp, null, MainActivity.getUserUpperLimit());
@@ -103,7 +105,7 @@ public class TextEditorActivity extends Activity
 				String baseFile = MainActivity.getBaseFileStr();
 				editText.setText(baseFile);
 				List<String> temp = new ArrayList<String>();
-				temp.add("sample");
+				temp.add("pass");
 				Log.i("createSession", "with base file");
 				Log.i("base file", baseFile);
 				OnlineClient.getInstance().iniInputBuffer(baseFile);
@@ -552,6 +554,13 @@ public class TextEditorActivity extends Activity
 	}
 	public static CursorWatcher getCursorWatcher() {
 		return editText;
+	}
+	
+	public boolean getGuard() {
+		return guard;
+	}
+	public void setGuard(boolean val) {
+		guard = val;
 	}
 }
 

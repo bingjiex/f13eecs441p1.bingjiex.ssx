@@ -46,7 +46,65 @@ public class CommandManager {
 		Log.i("commandStack size is ", String.valueOf(commandStack.size()));
 	}
 	
-	// receive a command
+public void receiveCommand (AbstractCommand cmd) {
+		
+		for (int i = commandStack.size() - 1; i >= 0; i--) {
+			Log.i("CommandManager receiveCommand stack", "Command name: " + commandStack.elementAt(i).toString() + "\n" + 
+														 "Command owner: " + commandStack.elementAt(i).getClient() + "\n" + 
+					 									 "Command submissionID: " + commandStack.elementAt(i).getSubmissionID());			
+		}
+		
+		Log.i("CommandManager receiveCommand", "cmd: " + cmd.toString());
+		// !! if there is no user in the map
+		// add in cursor map and redo map
+		if (!CursorTrack.getInstance().getCursorMap().containsKey(cmd.getClient())) {
+			Log.i("CommandManager receiveCommand", "client doesnot exist");
+			CursorTrack.getInstance().addClient(cmd.getClient());
+			RedoTrack.getInstance().addClient(cmd.getClient());
+		}
+		if (cmd instanceof UndoCommand) {
+			undo(cmd);
+		} else if (cmd instanceof RedoCommand) {
+			redo(cmd);
+		} else {
+			Log.i("CommandManager receiveCommand", "Command ID " + String.valueOf(cmd.getSubmissionID()));
+			if (cmd.getSubmissionID() == -1) {
+				Log.i("CommandManager receiveCommand", "other's command");
+				
+				Vector<AbstractCommand> temp = new Vector <AbstractCommand> ();
+				
+				for (int i = commandStack.size() - 1; i >= 0; i--) {
+					if (commandStack.elementAt(i).getSubmissionID() == -1) {
+						break;
+					} else {
+						AbstractCommand tempCommand = commandStack.elementAt(i);
+						commandStack.remove(i);
+						tempCommand.unwind();
+						temp.add(tempCommand);
+					}
+				}
+				
+				cmd.rewind();
+				commandStack.add(cmd);
+				for (int i = temp.size() - 1; i >= 0; i--) {
+					temp.elementAt(i).rewind();
+					commandStack.add(temp.elementAt(i));
+				}
+					
+				
+			} else {
+				Log.i("CommandManager receiveCommand", "owned command");
+				
+				for (int i = 0; i < commandStack.size(); i++) {
+					if (commandStack.elementAt(i).getSubmissionID() == cmd.getSubmissionID()) {
+						commandStack.elementAt(i).setSubmissionID(-1);
+						break;
+					}
+				}
+			}
+		}
+	}
+	/*// receive a command
 	public void receiveCommand (AbstractCommand cmd) {
 		
 		for (int i = commandStack.size() - 1; i >= 0; i--) {
@@ -72,6 +130,12 @@ public class CommandManager {
 			if (cmd.getSubmissionID() == -1) {
 				Log.i("CommandManager receiveCommand", "other's command");
 				// go into stack
+				
+				
+				
+				
+				
+				
 				commandStack.add(cmd);
 				cmd.rewind(); 
 			} else {
@@ -95,8 +159,6 @@ public class CommandManager {
 					temp.elementAt(i).rewind();
 					commandStack.add(temp.elementAt(i));
 				}
-				
-				
 				cmd.rewind();
 				// set submissionID -1
 				// add to commandStack
@@ -106,7 +168,7 @@ public class CommandManager {
 				
 			}
 		}
-	}
+	}*/
 	
 	
 	

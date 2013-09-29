@@ -70,7 +70,7 @@ public class MainActivity extends Activity
 					// TODO Auto-generated method stub
 					try {
 						Log.i("@@", "@@");
-						temp.add("sample");
+						temp.add("pass");
 						OnlineClient.getInstance().getClient().requestSessionList(temp);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
