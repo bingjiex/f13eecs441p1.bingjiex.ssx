@@ -494,10 +494,7 @@ public class TextEditorActivity extends Activity
 				CommandManager.getInstance().newCommandHandling((int)OnlineClient.getInstance().getClientID());
 			} else {
 				// reverse the buffer string
-				String temp = "";
-				for (int i = temp.length() - 1; i >= 0; i++) {
-					temp += buffer.charAt(i);
-				}
+				String temp = new StringBuilder(buffer).reverse().toString();
 				AbstractCommand cmd = new RemoveCommand(temp, recoverMap);
 				recoverMap.clear();
 				
