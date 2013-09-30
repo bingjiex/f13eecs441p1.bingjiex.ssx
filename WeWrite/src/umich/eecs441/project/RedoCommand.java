@@ -65,4 +65,8 @@ public class RedoCommand implements AbstractCommand{
 		return;
 	}
 	
+	public int getTrackMapSize() {
+		return 0;
+	}
+	
 }

@@ -353,11 +353,17 @@ public class TextEditorActivity extends Activity
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 				if (count > after) {
 					String change = s.toString().substring(start, start + count - after);
+					
+					
+					Log.i("TextEditorActivity beforeTextChanged recoverMap", "Map size: " + String.valueOf(recoverMap.size()));
+					
 					for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 						 if (entry.getValue() == CursorTrack.getInstance().getCursorMap().get(OnlineClient.getInstance().getClientID())) {
 							 recoverMap.put(entry.getKey(), entry.getValue());
 						 }
 					}
+					
+					Log.i("TextEditorActivity beforeTextChanged recoverMap", "Map size: " + String.valueOf(recoverMap.size()));
 					
 					Log.i("@ TextEditor afterTextChanged is calling CursorTrack's moveLeft", "Client: "+ OnlineClient.getInstance().getClientID() 
 							+ "move left: " + String.valueOf(1));
@@ -458,6 +464,9 @@ public class TextEditorActivity extends Activity
 				Log.i("TextEditorActivity timeUp", "temp: " + temp);
 				AbstractCommand cmd = new RemoveCommand(temp, recoverMap);
 				recoverMap.clear();
+				
+				Log.i("@ TextEditorActivity timeUp", "TrackMap size: " + String.valueOf(cmd.getTrackMapSize()));
+				
 				cmd.execute();
 				CommandManager.getInstance().storeCommand(cmd);
 				OnlineClient.getInstance().setCommandStackContains(
@@ -490,6 +499,9 @@ public class TextEditorActivity extends Activity
 				}
 				AbstractCommand cmd = new RemoveCommand(temp, recoverMap);
 				recoverMap.clear();
+				
+				Log.i("@ TextEditorActivity changeCommand", "TrackMap size: " + String.valueOf(cmd.getTrackMapSize()));
+				
 				cmd.execute();
 				CommandManager.getInstance().storeCommand(cmd);				
 				OnlineClient.getInstance().setCommandStackContains(

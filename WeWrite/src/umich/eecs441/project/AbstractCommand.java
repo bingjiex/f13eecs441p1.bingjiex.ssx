@@ -37,5 +37,8 @@ public interface AbstractCommand {
 	public int getSubmissionID ();
 	// add setSubmissionID to set flag to confirmed, -1
 	public void setSubmissionID (int subId);
+	
+	// used for debugging
+	public int getTrackMapSize();
 
 }

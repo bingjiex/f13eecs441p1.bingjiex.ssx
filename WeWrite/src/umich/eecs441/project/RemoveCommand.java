@@ -89,8 +89,8 @@ public class RemoveCommand implements AbstractCommand{
 		removedChar = myChar;
 		text = TextEditorActivity.getCursorWatcher();
 		
-				
 		Log.i("RemoveCommand", "Constructor");
+		Log.i("RecoverCommand constructor", "trackMap size: " + String.valueOf(trackMap.size()));
 	}
 	
 	// TODO: if there is 
@@ -154,12 +154,15 @@ public class RemoveCommand implements AbstractCommand{
 		Log.i("@ RemoveCommand unwind is calling CursorTrack's moveRight", "Client: "+ client + "ActualRemoveLength: " +String.valueOf(actualRemovedChar.length()));
 		CursorTrack.getInstance().moveRight(client,	actualRemovedChar.length());
 		
+		Log.i("RemoveCommand", "trackMap size: " + String.valueOf(trackMap.size()));
+		
 		for (Map.Entry<Long, Integer> entry : trackMap.entrySet()) {
 			if (entry.getKey() != client) {
 				Log.i("RemoveCommand unwind trackMap", "clientID: " + String.valueOf(entry.getKey()) + "cursorPos: " + String.valueOf(entry.getValue()));
 				CursorTrack.getInstance().getCursorMap().put(entry.getKey(), trackMap.get(entry.getKey()));
 			}
 		}
+		
 		
 		trackMap.clear();
 		
@@ -240,6 +243,11 @@ public class RemoveCommand implements AbstractCommand{
 		Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - actualLength;
 		if (entry.getValue() <= senderCursorPosBefore && entry.getValue() > senderCursorPosAfter) return true;
 		else return false;
+	}
+	
+	
+	public int getTrackMapSize() {
+		return trackMap.size();
 	}
 
 }

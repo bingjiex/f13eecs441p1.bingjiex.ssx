@@ -157,5 +157,8 @@ public class CursorCommand implements AbstractCommand {
 		}
 	}
 	
+	public int getTrackMapSize() {
+		return 0;
+	}
 	
 }

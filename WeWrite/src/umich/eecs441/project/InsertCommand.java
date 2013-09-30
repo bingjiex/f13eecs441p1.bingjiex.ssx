@@ -148,5 +148,7 @@ public class InsertCommand implements AbstractCommand{
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
-	
+	public int getTrackMapSize() {
+		return 0;
+	}
 }

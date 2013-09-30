@@ -61,4 +61,7 @@ public class UndoCommand implements AbstractCommand{
 		return;
 	}
 	
+	public int getTrackMapSize() {
+		return 0;
+	}
 }
