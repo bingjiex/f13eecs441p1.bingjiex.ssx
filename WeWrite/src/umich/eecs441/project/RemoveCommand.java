@@ -151,13 +151,15 @@ public class RemoveCommand implements AbstractCommand{
 		temp = temp.substring(0, cursorPosition) + actualRemovedChar + temp.substring(cursorPosition);
 		text.setText(temp);
 		
-		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
-			if (trackMap.containsKey(entry.getKey()) && entry.getKey() != client) {
+		Log.i("@ RemoveCommand unwind is calling CursorTrack's moveRight", "Client: "+ client + "ActualRemoveLength: " +String.valueOf(actualRemovedChar.length()));
+		CursorTrack.getInstance().moveRight(client,	actualRemovedChar.length());
+		
+		for (Map.Entry<Long, Integer> entry : trackMap.entrySet()) {
+			if (entry.getKey() != client) {
+				Log.i("RemoveCommand unwind trackMap", "clientID: " + String.valueOf(entry.getKey()) + "cursorPos: " + String.valueOf(entry.getValue()));
 				CursorTrack.getInstance().getCursorMap().put(entry.getKey(), trackMap.get(entry.getKey()));
 			}
 		}
-		Log.i("@ RemoveCommand unwind is calling CursorTrack's moveRight", "Client: "+ client + "ActualRemoveLength: " +String.valueOf(actualRemovedChar.length()));
-		CursorTrack.getInstance().moveRight(client,	actualRemovedChar.length());
 		
 		trackMap.clear();
 		
@@ -189,12 +191,13 @@ public class RemoveCommand implements AbstractCommand{
 		
 		temp = temp.substring(0, cursorPosition - actualRemoveLength) + temp.substring(cursorPosition);
 		
-		
-		
-		
 		Log.i("RemoveCommand after rewind", "rewind text: " + temp);
 		
 		text.setText(temp);
+		
+		// order matters
+		Log.i("@ RemoveCommand rewind is calling CursorTrack's moveLeft", "Client: "+ client + "ActualRemoveLength: " + actualRemoveLength);
+		CursorTrack.getInstance().moveLeft(client, actualRemoveLength);
 		
 		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (isBetween(entry, actualRemoveLength)) {
@@ -202,9 +205,6 @@ public class RemoveCommand implements AbstractCommand{
 			}
 		}
 		
-		Log.i("@ RemoveCommand rewind is calling CursorTrack's moveLeft", "Client: "+ client + "ActualRemoveLength: " + actualRemoveLength);
-		
-		CursorTrack.getInstance().moveLeft(client, actualRemoveLength);
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	
