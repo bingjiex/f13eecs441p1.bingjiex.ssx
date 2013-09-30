@@ -150,9 +150,9 @@ public class CursorCommand implements AbstractCommand {
 			CursorTrack.getInstance().moveCursor(client, text.getText().toString().length()-currentPos);
 			Log.i("CursorCommand rewind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 		} else {
-			Log.i("CursorCommand execute()", "proper");
+			Log.i("CursorCommand rewind()", "proper");
 			CursorTrack.getInstance().moveCursor(client, movement);
-			Log.i("CursorCommand execute()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
+			Log.i("CursorCommand rewind()", "current position after " + String.valueOf(CursorTrack.getInstance().getCursor(client)));
 			
 		}
 	}

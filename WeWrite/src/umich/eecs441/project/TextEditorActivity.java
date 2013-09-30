@@ -358,6 +358,10 @@ public class TextEditorActivity extends Activity
 							 recoverMap.put(entry.getKey(), entry.getValue());
 						 }
 					}
+					
+					Log.i("@ TextEditor afterTextChanged is calling CursorTrack's moveLeft", "Client: "+ OnlineClient.getInstance().getClientID() 
+							+ "move left: " + String.valueOf(1));
+					
 					CursorTrack.getInstance().moveLeft(OnlineClient.getInstance().getClientID(), 1);
 					Log.i("TextEditor onTextChange beforeTextChanged", change);
 					changeCommand("Delete", change);
@@ -399,6 +403,9 @@ public class TextEditorActivity extends Activity
 					
 					
 					String change = s.toString().substring(start, start + count - before);
+					
+					Log.i("@ TextEditor onTextChanged is calling CursorTrack's moveRight", "Client: "+ OnlineClient.getInstance().getClientID() 
+							+ "move right: " + String.valueOf(1));
 					CursorTrack.getInstance().moveRight(OnlineClient.getInstance().getClientID(), 1);
 					changeCommand("Insert", change);
 					startTime = System.currentTimeMillis();

@@ -61,17 +61,22 @@ public class CursorTrack {
 	public void moveRight(Long client, Integer length){
 		
 		int clientPos = cursorMap.get(client);
+		Log.i("CursorTrack moveRight is called", "CursorTrack moveRight is called");
 		
 		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
 			 if (entry.getValue() > clientPos) {
-				 Log.i("CursorTrack @ before @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ before @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() + "\n" +
+						 "client's cursor position: " + String.valueOf(clientPos));
 				 cursorMap.put(entry.getKey(), entry.getValue() + length);
-				 Log.i("CursorTrack @ after @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ after @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() + "\n" +
+						 "client's cursor position: " + String.valueOf(clientPos));
 			 }
 		}
-		Log.i("CursorTrack @ before @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
+		Log.i("CursorTrack @ before @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client) + "\n" +
+				 "client's cursor position: " + String.valueOf(clientPos));
 		cursorMap.put(client, cursorMap.get(client) + length);
-		Log.i("CursorTrack @ after @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
+		Log.i("CursorTrack @ after @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client) + "\n" +
+				 "client's cursor position: " + String.valueOf(clientPos));
 	}
 	/**
 	 * move all the cursors that after this client cursors left by length
@@ -84,16 +89,22 @@ public class CursorTrack {
 		
 		int clientPos = cursorMap.get(client);
 		
+		Log.i("CursorTrack moveLeft is called", "CursorTrack moveLeft is called");
+		
 		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
 			 if (entry.getValue() >= clientPos) {
-				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() + "\n" +
+			 "client's cursor position: " + String.valueOf(clientPos));
 				 cursorMap.put(entry.getKey(), entry.getValue() - length);
-				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() + "\n" +
+						 "client's cursor position: " + String.valueOf(clientPos));
 			 } else if (entry.getValue() < clientPos && 
 					 entry.getValue() >= clientPos - length) {
-				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() + "\n" +
+						 "client's cursor position: " + String.valueOf(clientPos));
 				 cursorMap.put(entry.getKey(), cursorMap.get(client) - length);
-				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue() +  "\n" +
+						 "client's cursor position: " + String.valueOf(clientPos));
 			 }
 		}
 	}

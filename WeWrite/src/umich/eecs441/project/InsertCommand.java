@@ -123,8 +123,12 @@ public class InsertCommand implements AbstractCommand{
 		// it should be able to change the text on the edit text
 		String temp = text.getText().toString();
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
+		Log.i("Insert unwind @ temp", "Client: " + String.valueOf(client) + "\n" + "Newchar: " + newChar + "\n Cursor: " + String.valueOf(cursorPosition));
 		temp = temp.substring(0,cursorPosition - newChar.length()) + temp.substring(cursorPosition);
 		text.setText(temp);
+		
+		Log.i("@ InsertCommand unwind is calling CursorTrack's moveLeft", "Client: "+ client + "NewCharLenghth: " + String.valueOf(newChar.length()));
+		
 		CursorTrack.getInstance().moveLeft(client, newChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
@@ -137,6 +141,9 @@ public class InsertCommand implements AbstractCommand{
 		int cursorPosition = CursorTrack.getInstance().getCursor(client);
 		temp = temp.substring(0, cursorPosition) + newChar + temp.substring(cursorPosition);
 		text.setText(temp);
+		
+		Log.i("@ InsertCommand rewind is calling CursorTrack's moveRight", "Client: "+ client + "NewCharLenghth: " + String.valueOf(newChar.length()));
+		
 		CursorTrack.getInstance().moveRight(client, newChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
