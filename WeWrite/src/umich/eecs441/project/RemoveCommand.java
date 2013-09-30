@@ -195,15 +195,15 @@ public class RemoveCommand implements AbstractCommand{
 		
 		text.setText(temp);
 		
-		// order matters
-		Log.i("@ RemoveCommand rewind is calling CursorTrack's moveLeft", "Client: "+ client + "ActualRemoveLength: " + actualRemoveLength);
-		CursorTrack.getInstance().moveLeft(client, actualRemoveLength);
 		
 		for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 			if (isBetween(entry, actualRemoveLength)) {
 				trackMap.put(entry.getKey(), entry.getValue());
 			}
 		}
+
+		Log.i("@ RemoveCommand rewind is calling CursorTrack's moveLeft", "Client: "+ client + "ActualRemoveLength: " + actualRemoveLength);
+		CursorTrack.getInstance().moveLeft(client, actualRemoveLength);
 		
 		text.addTextChangedListener(text.getTextWatcher());
 	}
