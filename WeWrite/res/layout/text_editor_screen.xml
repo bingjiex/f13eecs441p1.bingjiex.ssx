@@ -77,6 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonbackground3"
+            android:textColor="#FFFFFF"
             android:layout_weight="0.5"
             android:textSize="15sp"
             android:text="@string/leave" />
