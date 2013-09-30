@@ -37,8 +37,6 @@ public class MainActivity extends Activity
 	
 	// obtain the session list
 	private List <CollabrifySession> sessionList;
-	// 0 means in progress
-//	private int optionGuard = 0;
 	
 	private ArrayList<String> temp = new ArrayList<String>();
 	
@@ -75,41 +73,6 @@ public class MainActivity extends Activity
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 					}
-				/*new Thread () {
-					public void run () {
-						Log.i("find list thread", "run");
-						while (optionGuard == 0) {}
-						if (optionGuard == 1) {
-							Log.i("find list thread", "no list");
-							waitingDialog.dismiss();
-							final AlertDialog.Builder WrongUserInformationDialog = new AlertDialog.Builder(MainActivity.this);
-							WrongUserInformationDialog.setTitle("No Availabel Session");
-							WrongUserInformationDialog.setMessage("Please create one");
-							WrongUserInformationDialog.setPositiveButton("OK", null);
-							WrongUserInformationDialog.show();
-							return;
-							
-						} else {
-							Log.i("find list thread", "list");
-							waitingDialog.dismiss();
-							final AlertDialog.Builder builder = new AlertDialog.Builder(
-									MainActivity.this);
-							ArrayList <String> sessionNames = new ArrayList<String>();
-							for (CollabrifySession e : sessionList) {
-								sessionNames.add(e.name());
-							}
-							builder.setTitle("Choose Session").setItems(
-									sessionNames.toArray(new String[sessionList.size()]), 
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(
-									DialogInterface dialog, int which) {
-									sessionId = sessionList.get(which).id();
-								}
-							});
-						}
- 					}
-				}.run();*/
 			}
 			
 		});
@@ -193,32 +156,6 @@ public class MainActivity extends Activity
 			}
 		});
 
-		
-		
-		
-		/*
-		createSession.setOnClickListener(new Button.OnClickListener () {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				try {
-					Vector<String> list = new Vector<String>();
-					list.add("dummy");
-					Random rand = new Random();
-					String sessionName = "Test" + rand.nextInt(Integer.MAX_VALUE);
-					OnlineClient.getInstance().getClient().createSession(sessionName, list, "12345", 12);
-					
-				} catch (CollabrifyException e) {
-					Log.e("create session failed", " ");
-				}
-				
-			}
-			
-		});
-		
-		
-	*/
 	}
 	
 	@Override

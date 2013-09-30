@@ -171,10 +171,6 @@ public class TextEditorActivity extends Activity
 					AbstractCommand cmd = new UndoCommand ();
 					cmd.execute();
 					
-			/*		if (cmd.getClient() == Client.getInstance().getClient()) {
-						Log.i("undo button clicked", "  ");*/
-//						editText.setSelection(CursorTrack.getInstance().getCursor(Client.getInstance().getClient()));
-					/*}*/
 				}
 			}
 
@@ -197,10 +193,6 @@ public class TextEditorActivity extends Activity
 					
 					// It should run when the client receive the redo request
 					// move it into receive client
-//					CommandManager.getInstance().redo(cmd);
-//					if (cmd.getClient() == Client.getInstance().getClient()) {
-//						editText.setSelection(CursorTrack.getInstance().getCursor(Client.getInstance().getClient()));
-//					}
 				}
 			}
 			
@@ -245,7 +237,6 @@ public class TextEditorActivity extends Activity
 					
 					// when received an event
 					// just pass the client ID
-//					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 					// TODO when receive a command, put the command into the stack, also check if it is confirmed or not
 					
 				}
@@ -373,7 +364,6 @@ public class TextEditorActivity extends Activity
 					Log.i("TextEditor onTextChange beforeTextChanged", change);
 					changeCommand("Delete", change);
 					startTime = System.currentTimeMillis();	
-//					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 				}
 				
 				
@@ -384,27 +374,6 @@ public class TextEditorActivity extends Activity
 					
 				if (count > before) {
 					
-					/*Client.getInstance().setCommandStackContains(
-							Client.getInstance().getCommandStackContains() + 1);
-					Log.i("onTextChanged triggered, CharSequence", s.toString());
-					Log.i("onTextChanged triggered, Current Edit Text", editText.getText().toString());
-					Log.i("onTextChanged triggered, start", String.valueOf(start));
-					Log.i("onTextChanged triggered, count", String.valueOf(count));
-					Log.i("onTextChanged triggered, before", String.valueOf(before));
-					String change = s.toString().substring(start, start + count - before);
-					Log.i("onTextChanged triggered, string change", change);
-					AbstractCommand cmd = new InsertCommand(change, editText);
-					CommandManager.getInstance().storeCommand(cmd);
-					cmd.execute();
-					
-					// when there is a new command executed, we have to tell that the client
-					// can undo no matter if it is confirmed, so 
-					Client.getInstance().setCommandStackContains(
-							Client.getInstance().getCommandStackContains() + 1);
-					Client.getInstance().setRedoListContains(0);
-					//!!!! two number in Client is just for track the very instant operation of the client
-					// doesnt influence the real stack, where the change occurs when the command come back
-					*/
 					// Since it is not collabrify, just do as if we get the response
 					// clear
 					
@@ -416,7 +385,6 @@ public class TextEditorActivity extends Activity
 					CursorTrack.getInstance().moveRight(OnlineClient.getInstance().getClientID(), 1);
 					changeCommand("Insert", change);
 					startTime = System.currentTimeMillis();
-//					CommandManager.getInstance().newCommandHandling(Client.getInstance().getClient());
 				}
 			}
 		};
@@ -457,10 +425,6 @@ public class TextEditorActivity extends Activity
 			} else {
 				Log.i("TextEditorActivity timeUp lastCommand is remove", buffer);
 				// reverse the buffer string
-				/*String temp ="";
-				for (int i = temp.length() - 1; i >= 0; i++) {
-					temp.concat(buffer.substring(i, i+1));
-				}*/
 				String temp = new StringBuilder(buffer).reverse().toString();
 				Log.i("TextEditorActivity timeUp", "temp: " + temp);
 				AbstractCommand cmd = new RemoveCommand(temp, recoverMap);

@@ -6,7 +6,7 @@ import android.util.Log;
 
 /**
  * Singleton for the CommandManager
- * @author picc
+ * @author Bingjie Xu, Shaoxiang Su
  *
  */
 
@@ -104,71 +104,6 @@ public void receiveCommand (AbstractCommand cmd) {
 			}
 		}
 	}
-	/*// receive a command
-	public void receiveCommand (AbstractCommand cmd) {
-		
-		for (int i = commandStack.size() - 1; i >= 0; i--) {
-			Log.i("CommandManager receiveCommand stack", "Command name: " + commandStack.elementAt(i).toString() + "\n" + 
-														 "Command owner: " + commandStack.elementAt(i).getClient() + "\n" + 
-					 									 "Command submissionID: " + commandStack.elementAt(i).getSubmissionID());			
-		}
-		
-		Log.i("CommandManager receiveCommand", "cmd: " + cmd.toString());
-		// !! if there is no user in the map
-		// add in cursor map and redo map
-		if (!CursorTrack.getInstance().getCursorMap().containsKey(cmd.getClient())) {
-			Log.i("CommandManager receiveCommand", "client doesnot exist");
-			CursorTrack.getInstance().addClient(cmd.getClient());
-			RedoTrack.getInstance().addClient(cmd.getClient());
-		}
-		if (cmd instanceof UndoCommand) {
-			undo(cmd);
-		} else if (cmd instanceof RedoCommand) {
-			redo(cmd);
-		} else {
-			Log.i("CommandManager receiveCommand", "Command ID " + String.valueOf(cmd.getSubmissionID()));
-			if (cmd.getSubmissionID() == -1) {
-				Log.i("CommandManager receiveCommand", "other's command");
-				// go into stack
-				
-				
-				
-				
-				
-				
-				commandStack.add(cmd);
-				cmd.rewind(); 
-			} else {
-				Log.i("CommandManager receiveCommand", "owned command");
-				Vector<AbstractCommand> temp = new Vector<AbstractCommand> ();
-				
-				for (int i = commandStack.size() - 1; i >= 0; i--) {
-					if (commandStack.elementAt(i).getSubmissionID() == cmd.getSubmissionID()) {
-						Log.i("CommandManager receiveCommand", "find the command with the same ID");
-						commandStack.elementAt(i).unwind();
-						commandStack.remove(i); 
-						break;
-					} else {
-						AbstractCommand tempCommand = commandStack.elementAt(i);
-						commandStack.elementAt(i).unwind();
-						commandStack.remove(i);
-						temp.add(tempCommand);
-					}
-				}
-				for (int i = temp.size() - 1; i >= 0; i--) {
-					temp.elementAt(i).rewind();
-					commandStack.add(temp.elementAt(i));
-				}
-				cmd.rewind();
-				// set submissionID -1
-				// add to commandStack
-				cmd.setSubmissionID(-1);
-				Log.i("CommandManager receiveCommand", "setSubmissionID " + String.valueOf(cmd.getSubmissionID()));
-				commandStack.add(cmd);
-				
-			}
-		}
-	}*/
 	
 	
 	
@@ -271,13 +206,6 @@ public void receiveCommand (AbstractCommand cmd) {
 		// TODO delete the redoContains in the Client class of the current client track
 		// no need for it
 		AbstractCommand redoCommand = null;
-		/*for (int i = redoList.size() - 1; i >= 0; i--) {
-			if (redoList.elementAt(i).getClient() == cmd.getClient()) {
-				redoCommand = redoList.elementAt(i);
-				redoList.removeElementAt(i);
-				break;
-			}
-		}*/
 		// check if the redo List has element
 		// actually there is no need to check, because before sending the request
 		// the button listener will track this

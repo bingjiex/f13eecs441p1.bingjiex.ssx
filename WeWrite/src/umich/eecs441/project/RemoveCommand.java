@@ -116,16 +116,8 @@ public class RemoveCommand implements AbstractCommand{
 			}
 		}
 		
-		/*for (Map.Entry<Integer, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
-			if (isBetween(entry)) {
-				Integer senderCursorPosAfter = CursorTrack.getInstance().getCursor(client) - removedChar.length();
-				trackMap.put(entry.getKey(), entry.getValue()-senderCursorPosAfter);
-			}
-		}
-		*/
 		Log.i("RemoveCommand, current cursor before execute", String.valueOf(CursorTrack.getInstance().getCursor(client)));
 	
-//		CursorTrack.getInstance().moveLeft(client,removedChar.length());
 		
 		/*
 		 * Store to the command manager log, when Command is constructed, use getInstance store!!!
@@ -166,7 +158,6 @@ public class RemoveCommand implements AbstractCommand{
 		
 		trackMap.clear();
 		
-		//CursorTrack.getInstance().moveRight(client, removedChar.length());
 		text.addTextChangedListener(text.getTextWatcher());
 	}
 	

@@ -100,7 +100,6 @@ public class InsertCommand implements AbstractCommand{
 		 * increment all the cursor after the current cursor position by 1 for rewind
 		 * since after this operation there might be delete from other place 
 		 */
-//		CursorTrack.getInstance().moveRight(client, newChar.length());
 		
 		/*
 		 * Store to the command manager log, when Command is constructed, use getInstance store!!!

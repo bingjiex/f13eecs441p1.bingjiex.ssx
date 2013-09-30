@@ -39,13 +39,6 @@ public class CursorCommand implements AbstractCommand {
 	// TODO protocol buffer needs client movement;
 	
 	// TODO add another constructor to accept event and push into stack
-	/*public CursorCommand (ProtocolBufferClass object) {
-		client = object.getClient();
-		movement = object.getMovement();
-		submissionID = object.getSubmissionID();
-		CursorTrack.getInstance() = CursorTrack.getInstance();
-	}
-	*/
 	
 	
 	public long getClient(){
