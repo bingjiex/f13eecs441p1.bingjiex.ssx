@@ -149,4 +149,8 @@ public class CursorTrack {
 		return cursorMap;
 	}
 	
+	public static void clear () {
+		instance = null;
+	}
+	
 }

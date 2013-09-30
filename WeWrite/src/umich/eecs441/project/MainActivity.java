@@ -53,6 +53,13 @@ public class MainActivity extends Activity
 		createSession = (Button)this.findViewById(R.id.button1);
 		joinSession = (Button)this.findViewById(R.id.button2);
 		
+		
+		// init singleton
+		CursorTrack.clear();
+		OnlineClient.clear();
+		RedoTrack.clear();
+		
+		
 		OnlineClient.getInstance(this.getApplicationContext());
 		
 		OnlineClient.getInstance().setMainActivity(MainActivity.this);

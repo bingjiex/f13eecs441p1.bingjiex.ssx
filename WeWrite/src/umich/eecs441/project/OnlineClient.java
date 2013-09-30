@@ -324,5 +324,8 @@ public class OnlineClient {
 		baseFileBuffer = new ByteArrayInputStream(MainActivity.getBaseFileStr().getBytes());
 	}
 
+	public static void clear () {
+		instance = null;
+	}
 	
 }

@@ -62,5 +62,8 @@ public class RedoTrack {
 		redoMap.get(client).clear();
 	}
 	
+	public static void clear () {
+		instance = null;
+	}
 	
 }
