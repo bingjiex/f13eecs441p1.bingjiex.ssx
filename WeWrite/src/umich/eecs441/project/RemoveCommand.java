@@ -85,7 +85,7 @@ public class RemoveCommand implements AbstractCommand{
 		
 		// current is int type, expected to use client type
 		client = (int)OnlineClient.getInstance().getClientID();
-		trackMap = recoverMap;
+		trackMap = new HashMap<Long, Integer> (recoverMap);
 		removedChar = myChar;
 		text = TextEditorActivity.getCursorWatcher();
 		
