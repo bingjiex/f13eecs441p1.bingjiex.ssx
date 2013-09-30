@@ -59,12 +59,19 @@ public class CursorTrack {
 	 * @return 
 	 */
 	public void moveRight(Long client, Integer length){
+		
+		int clientPos = cursorMap.get(client);
+		
 		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
-			 if (entry.getValue() > cursorMap.get(client)) {
+			 if (entry.getValue() > clientPos) {
+				 Log.i("CursorTrack @ before @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
 				 cursorMap.put(entry.getKey(), entry.getValue() + length);
+				 Log.i("CursorTrack @ after @ moveRight", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
 			 }
 		}
+		Log.i("CursorTrack @ before @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
 		cursorMap.put(client, cursorMap.get(client) + length);
+		Log.i("CursorTrack @ after @ moveRight", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
 	}
 	/**
 	 * move all the cursors that after this client cursors left by length
@@ -74,13 +81,19 @@ public class CursorTrack {
 	 */
 	// canbe used in insert and remove
 	public void moveLeft(Long client, Integer length){
+		
+		int clientPos = cursorMap.get(client);
+		
 		for (Map.Entry<Long, Integer> entry : cursorMap.entrySet()) {
-			 if (entry.getValue() >= cursorMap.get(client)) {
+			 if (entry.getValue() >= clientPos) {
+				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
 				 cursorMap.put(entry.getKey(), entry.getValue() - length);
-			 }
-			 else if (entry.getValue() < cursorMap.get(client) && 
-					 entry.getValue() >= cursorMap.get(client) - length) {
+				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
+			 } else if (entry.getValue() < clientPos && 
+					 entry.getValue() >= clientPos - length) {
+				 Log.i("CursorTrack @ before @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
 				 cursorMap.put(entry.getKey(), cursorMap.get(client) - length);
+				 Log.i("CursorTrack @ after @ moveLeft", "Client: " + entry.getKey() + "\n" + "Cursor: " + entry.getValue());
 			 }
 		}
 	}
@@ -90,7 +103,9 @@ public class CursorTrack {
 	 * @param movement
 	 */
 	public void moveCursor(Long client, Integer movement) {
+		Log.i("CursorTrack @ before @ moveCursor", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
 		cursorMap.put(client, cursorMap.get(client) + movement);
+		Log.i("CursorTrack @ after @ moveCursor", "Client: " + client + "\n" + "Cursor: " + CursorTrack.getInstance().getCursor(client));
 	}
 	
 	/**

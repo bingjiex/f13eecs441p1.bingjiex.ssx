@@ -36,8 +36,6 @@ public class InsertCommand implements AbstractCommand{
 	 */
 	private CursorWatcher text;
 	
-
-	
 	
 	/**
 	 * get the client of the operation
@@ -89,6 +87,7 @@ public class InsertCommand implements AbstractCommand{
 		if (OnlineClient.getInstance().getClient().inSession() && 
 				OnlineClient.getInstance().getClient() != null) {
 			try {
+				Log.i("@@@@ InsertCommand execute", "insert char: " + newChar);
 				submissionID = OnlineClient.getInstance().getClient().broadcast(object.toByteArray(), "InsertCommand");
 			} catch (CollabrifyException e) {
 				e.printStackTrace();

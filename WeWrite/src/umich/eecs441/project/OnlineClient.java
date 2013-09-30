@@ -147,7 +147,7 @@ public class OnlineClient {
 				}
 				
 				cmd.setSubmissionID(subId);
-				while ()
+			
 				editorActivity.eventReceived(cmd);
 			}
 
