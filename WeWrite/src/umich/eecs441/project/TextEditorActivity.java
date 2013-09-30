@@ -359,7 +359,8 @@ public class TextEditorActivity extends Activity
 					
 					for (Map.Entry<Long, Integer> entry : CursorTrack.getInstance().getCursorMap().entrySet()) {
 						 if (entry.getValue() == CursorTrack.getInstance().getCursorMap().get(OnlineClient.getInstance().getClientID())) {
-							 recoverMap.put(entry.getKey(), entry.getValue());
+							 if (!recoverMap.containsKey(entry.getKey()))
+								 recoverMap.put(entry.getKey(), entry.getValue());
 						 }
 					}
 					
