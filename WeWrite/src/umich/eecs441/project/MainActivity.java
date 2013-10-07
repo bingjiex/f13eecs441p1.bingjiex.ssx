@@ -56,7 +56,6 @@ public class MainActivity extends Activity
 		
 		// init singleton
 		CursorTrack.clear();
-		OnlineClient.clear();
 		RedoTrack.clear();
 		
 		
@@ -197,6 +196,7 @@ public class MainActivity extends Activity
 			@Override
 			public void onClick(
 				DialogInterface dialog, int which) {
+				createNewSession = false;
 				sessionId = sessionList.get(which).id();
 				// switch to the activity
 				Intent intent = new Intent();

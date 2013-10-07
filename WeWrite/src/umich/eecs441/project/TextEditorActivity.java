@@ -119,7 +119,7 @@ public class TextEditorActivity extends Activity
 					e.printStackTrace();
 				}
 				// start uploading
-				waitingDialog = ProgressDialog.show(TextEditorActivity.this, "Waiting...", "Creating Session", true);
+				waitingDialog = ProgressDialog.show(TextEditorActivity.this, "Waiting...", "Joining Session", true);
 			}
 		} else {
 			try {
@@ -294,7 +294,7 @@ public class TextEditorActivity extends Activity
 				
 				final AlertDialog.Builder alertDialogbuilder = new AlertDialog.Builder(TextEditorActivity.this);
 				alertDialogbuilder.setTitle("Leave Session");
-				alertDialogbuilder.setMessage("Are you sure to leave the session?");
+				alertDialogbuilder.setMessage("Are you sure to terminate the session?");
 				
 				alertDialogbuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			        public void onClick(DialogInterface dialog, int which) { 
@@ -506,7 +506,7 @@ public class TextEditorActivity extends Activity
 	}
 	
 	
-	public void eventReceived(final AbstractCommand cmd)  {
+	public synchronized void eventReceived(final AbstractCommand cmd) {
 				
 		// commmand is constructed
 		// first receive command
